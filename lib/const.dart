@@ -2,8 +2,9 @@ final normalLyric = """[ti:Arunachala Mahatmiyam]
 [ar:]
 [offset:0]
 Nuul
-[00:00.00]Karunarnavamai Karudha Kathi Nalgum
-[00:07.00]Arunachala Sivam Eedhaam
+[00:03.00]அருணா சலமென வகமே நினைப்பவ
+[00:07.00]ரகத்தைவே ரறுப்பா யருணாசலா(அ)
+[00:09.00]Arunachala Sivam Eedhaam
 [00:13.00]Buddhi ahaÙ-kÅram pulam-beida vángum 
 [00:20.00]Maddhi idayan-tÅn maraiya-vanum mÅlum 
 [00:25.00]Natta-vari yÅdu nalaÙ-kulaiya annÅr 
@@ -115,3 +116,103 @@ final transLyric = """[ti:Arunachala Mahatmiyam]
 [00:20.00]மத்தியித யந்தான் மறையவனு மாலு 
 [00:25.00]நத்தவறி யாது நலங்குலைய வன்னார் 
 [00:31.00]மத்தியொளி ரண்ணா மலையினது மெய்யே.""";
+
+final tamil_mp3_parent_url =
+    "https://www.sriramana.org/music/7daytamilparayana/";
+final mp3_tamil_list = [
+  "11arunachala_mahatmiyam.mp3",
+  "12arunachala_aksharamanamalai.mp3",
+  "13arunachala_navamanimalai.mp3",
+  "14arunachala_pathigam.mp3",
+  "15arunachala_ashtakam.mp3",
+  "16arunachala_pancharatnam.mp3",
+  "17arunachala_ramanan.mp3",
+  "18vazhthu.mp3", // 8
+  "21upadesa_undiyar.mp3",
+  "22ulladhu_narpadhu.mp3",
+  "23ulladhu_narpadhu_anubandham.mp3",
+  "24arunachala_pancharatnam.mp3",
+  "25sri_arunachala_ramana.mp3",
+  "26vazhthu.mp3", // 14
+  "31eganma_panchakam.mp3",
+  "32appalappattu.mp3",
+  "33anma_vidya_keerthanam.mp3",
+  "34devikalothram.mp3",
+  "35arunachala_pancharatnam.mp3",
+  "36arunachala_ramanan.mp3",
+  "37vazhthu.mp3", // 21
+  "41athma_sakshatkaraprakaranam.mp3",
+  "42bhagavath_geetha_saram.mp3",
+  "43arunachala_pancharatnam.mp3",
+  "44arunachala_ramanan.mp3",
+  "45vazhthu.mp3", // 26
+  "51sri_dakshinamoorthy_thothiram.mp3",
+  "52anma_bodham.mp3",
+  "53gurusthuthi.mp3",
+  "54aththamalagam.mp3",
+  "55arubachala_pancharathnam.mp3",
+  "56arunachala_ramanan.mp3",
+  "57vazhthu.mp3", // 33
+  "61kalai_pattu.mp3",
+  "62gummi_pattu.mp3",
+  "63ponnolir_pathu.mp3",
+  "64ponnaiyoththa_pattu.mp3",
+  "65sri_ramana_sathguru.mp3",
+  "001_vazhga_swayam_prakasam.mp3", //39
+  "004_punarvasu_vannam.mp3",
+  "005_vendar_pathigam.mp3"
+];
+
+final tamil_songs_list = [
+  [
+    "1. அருணாசல மாகாத்மியம்",
+    "2. அருணாசல அக்ஷரமணமாலை",
+    "3. அருணாசல நவமணிமாலை",
+    "4. அருணாசல பதிகம்",
+    "5. அருணாசல அஷ்டகம்",
+    "6. அருணாசல பஞ்சரத்னம்",
+    "7. அருணாசல ரமணன்",
+    "8. வாழ்த்து"
+  ],
+  [
+    "1. உபதேசவுந்தியார்",
+    "2. உள்ளது நாற்பது",
+    "3. உள்ளது நாற்பது அனுபந்தம்",
+    "4. அருணாசல பஞ்சரத்னம்",
+    "5. அருணாசல ரமணன்",
+    "6. வாழ்த்து"
+  ],
+  [
+    "1. ஏகான்ம விவேகம்",
+    "2. அப்பளப்பாட்டு",
+    "3. ஆன்மவித்தை",
+    "4. தேவிகாலோத்ரம்",
+    "5. அருணாசல பஞ்சரத்னம்",
+    "6. அருணாசல ரமணன்",
+    "7. வாழ்த்து"
+  ],
+  [
+    "1. ஆன்ம சாட்சாத்காரம் பிரகரணம்",
+    "2. பகவத் கீதா சாரம்",
+    "3. அருணாசல பஞ்சரத்னம்",
+    "4. அருணாசல ரமணன்",
+    "5. வாழ்த்து"
+  ],
+  [
+    "1. தக்ஷிணாமூர்த்தி தோத்திரம்",
+    "2. ஆன்மபோதம்",
+    "3. குருஸ்துதி",
+    "4. அத்தாமலகம்",
+    "5. அருணாசல பஞ்சரத்னம்",
+    "6. அருணாசல ரமணன்",
+    "7. வாழ்த்து"
+  ],
+  [
+    "1. காலைப்பாட்டு",
+    "2. கும்மிப்பாட்டு",
+    "3. பொன்னொளிர் பத்து",
+    "4. பொன்னையொத்த பத்து",
+    "5. ரமணஸத்குரு"
+  ],
+  ["வாழ்க ஸ்வயம் ப்ரகாசம்", "புனர்வசு வண்ணம்", "வேண்டற் பதிகம்"]
+];
