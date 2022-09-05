@@ -17,14 +17,15 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   AudioPlayer? audioPlayer;
-  double sliderProgress = 111658;
-  int playProgress = 111658;
+  double sliderProgress = 0;
+  //111658;
+  int playProgress = 0; //111658;
   double max_value = 211658;
   bool isTap = false;
 
   bool useEnhancedLrc = false;
   var lyricModel = LyricsModelBuilder.create()
-      .bindLyricToMain(normalLyric)
+      .bindLyricToMain(tamilLyric)
       .bindLyricToExt(transLyric)
       .getModel();
 
@@ -33,13 +34,23 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    lyricUI.defaultSize = 30;
+    lyricUI.defaultExtSize = 14;
+    lyricUI.otherMainSize = 15;
+    lyricUI.bias = 0.5;
+    lyricUI.lineGap = 10;
+    lyricUI.inlineGap = 25;
+    lyricUI.lyricAlign = LyricAlign.LEFT;
+    lyricUI.lyricBaseLine = LyricBaseLine.CENTER;
+    lyricUI.highlight = true;
+    lyricUI.highlightDirection = HighlightDirection.LTR;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Plugin example app'),
+        title: const Text('Sri Ramanasramamam Parayana'),
       ),
       body: buildContainer(),
     );
@@ -55,7 +66,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
             child: Column(
               children: [
                 ...buildPlayControl(),
-                ...buildUIControl(),
+                //...buildUIControl(),
               ],
             ),
           ),
@@ -88,7 +99,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
               children: [
                 IconButton(
                     onPressed: () {
-                      LyricsLog.logD("点击事件");
+                      LyricsLog.logD("click event");
                       confirm.call();
                       setState(() {
                         audioPlayer?.seek(Duration(milliseconds: progress));
@@ -117,15 +128,15 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   List<Widget> buildPlayControl() {
     return [
       Container(
-        height: 20,
+        height: 10,
       ),
-      Text(
-        "Progress:$sliderProgress",
-        style: TextStyle(
-          fontSize: 16,
-          color: Colors.green,
-        ),
-      ),
+      // Text(
+      //   "Progress:$sliderProgress",
+      //   style: TextStyle(
+      //     fontSize: 16,
+      //     color: Colors.green,
+      //   ),
+      // ),
       if (sliderProgress < max_value)
         Slider(
           min: 0,
@@ -227,11 +238,11 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     ];
   }
 
-  var mainTextSize = 18.0;
-  var extTextSize = 16.0;
-  var lineGap = 16.0;
+  var mainTextSize = 30.0;
+  var extTextSize = 15.0;
+  var lineGap = 10.0;
   var inlineGap = 10.0;
-  var lyricAlign = LyricAlign.CENTER;
+  var lyricAlign = LyricAlign.LEFT;
   var highlightDirection = HighlightDirection.LTR;
 
   List<Widget> buildUIControl() {
@@ -266,7 +277,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
           // Text("use Enhanced lrc")
         ],
       ),
-      buildTitle("highlight direction"),
+      // buildTitle("highlight direction"),
       Row(
         mainAxisSize: MainAxisSize.min,
         children: HighlightDirection.values
