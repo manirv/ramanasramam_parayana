@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
 
 import 'const.dart';
+import 'dbo.dart';
 
 void main() {
   runApp(MaterialApp(home: MyApp()));
@@ -50,7 +51,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sri Ramanasramamam Parayana'),
+        title: const Text('Sri Ramanasramam Parayana'),
       ),
       body: buildContainer(),
     );
@@ -167,8 +168,11 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
           TextButton(
               onPressed: () async {
                 if (audioPlayer == null) {
+                  //var localFile = await downloadSong(day, song_no);
+                  //var localFile = songs_fullpath_name(day,song_no)
                   audioPlayer = AudioPlayer()
                     ..play(AssetSource("11arunachala_mahatmiyam.mp3"));
+                  //..play(DeviceFileSource(localFile));
                   setState(() {
                     playing = true;
                   });
@@ -212,6 +216,23 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                 audioPlayer = null;
               },
               child: Text("Stop")),
+          TextButton(
+              onPressed: () async {
+                audioPlayer?.stop();
+                await getSong(1, 1);
+                var song = await getData();
+
+                audioPlayer = AudioPlayer()
+                  ..play(AssetSource(song[0]['audio_file_name']));
+                setState(() {
+                  playing = false;
+                  lyricModel = LyricsModelBuilder.create()
+                      .bindLyricToMain(song[0]['song'])
+                      .bindLyricToExt(transLyric)
+                      .getModel();
+                });
+              },
+              child: Text("Next")),
         ],
       ),
     ];
@@ -485,4 +506,9 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
 
   Text buildTitle(String title) => Text(title,
       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green));
+
+  downloadSong(day, song_no) {
+    //Download the song to the local download folder.
+    return "path_to_file";
+  }
 }
