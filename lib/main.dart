@@ -23,10 +23,12 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   int playProgress = 0; //111658;
   double max_value = 211658;
   bool isTap = false;
+  static int currentDay = 1;
+  static int currentSong = 1;
 
   bool useEnhancedLrc = false;
   var lyricModel = LyricsModelBuilder.create()
-      .bindLyricToMain(tamilLyric)
+      .bindLyricToMain(tamilLyric[getSongIndex(currentDay, currentSong)])
       .bindLyricToExt(transLyric)
       .getModel();
 
@@ -167,11 +169,51 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
         children: [
           TextButton(
               onPressed: () async {
+                currentSong = currentSong - 1;
+                audioPlayer?.stop();
+                var songIndex = getSongIndex(currentDay, currentSong);
+                audioPlayer = null;
+                lyricModel = LyricsModelBuilder.create()
+                    .bindLyricToMain(tamilLyric[songIndex])
+                    .bindLyricToExt(transLyric)
+                    .getModel();
+                audioPlayer = AudioPlayer()
+                  ..play(AssetSource(mp3_tamil_list[songIndex]));
+                //..play(DeviceFileSource(localFile));
+                setState(() {
+                  playing = true;
+                });
+                audioPlayer?.onDurationChanged.listen((Duration event) {
+                  setState(() {
+                    max_value = event.inMilliseconds.toDouble();
+                  });
+                });
+                audioPlayer?.onPositionChanged.listen((Duration event) {
+                  if (isTap) return;
+                  setState(() {
+                    sliderProgress = event.inMilliseconds.toDouble();
+                    playProgress = event.inMilliseconds;
+                  });
+                });
+
+                audioPlayer?.onPlayerStateChanged.listen((PlayerState state) {
+                  setState(() {
+                    playing = state == PlayerState.playing;
+                  });
+                });
+              },
+              child: Text("Prev")),
+          Container(
+            width: 10,
+          ),
+          TextButton(
+              onPressed: () async {
                 if (audioPlayer == null) {
                   //var localFile = await downloadSong(day, song_no);
                   //var localFile = songs_fullpath_name(day,song_no)
                   audioPlayer = AudioPlayer()
-                    ..play(AssetSource("11arunachala_mahatmiyam.mp3"));
+                    ..play(AssetSource(
+                        mp3_tamil_list[getSongIndex(currentDay, currentSong)]));
                   //..play(DeviceFileSource(localFile));
                   setState(() {
                     playing = true;
@@ -213,23 +255,47 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
           TextButton(
               onPressed: () async {
                 audioPlayer?.stop();
-                audioPlayer = null;
+                //audioPlayer = null;
               },
               child: Text("Stop")),
+          Container(
+            width: 10,
+          ),
           TextButton(
               onPressed: () async {
+                currentSong = currentSong + 1;
                 audioPlayer?.stop();
                 await getSong(1, 1);
                 var song = await getData();
-
+                var songIndex = getSongIndex(currentDay, currentSong);
+                audioPlayer = null;
+                lyricModel = LyricsModelBuilder.create()
+                    .bindLyricToMain(tamilLyric[songIndex])
+                    .bindLyricToExt(transLyric)
+                    .getModel();
                 audioPlayer = AudioPlayer()
-                  ..play(AssetSource(song[0]['audio_file_name']));
+                  ..play(AssetSource(mp3_tamil_list[songIndex]));
+                //..play(DeviceFileSource(localFile));
                 setState(() {
-                  playing = false;
-                  lyricModel = LyricsModelBuilder.create()
-                      .bindLyricToMain(song[0]['song'])
-                      .bindLyricToExt(transLyric)
-                      .getModel();
+                  playing = true;
+                });
+                audioPlayer?.onDurationChanged.listen((Duration event) {
+                  setState(() {
+                    max_value = event.inMilliseconds.toDouble();
+                  });
+                });
+                audioPlayer?.onPositionChanged.listen((Duration event) {
+                  if (isTap) return;
+                  setState(() {
+                    sliderProgress = event.inMilliseconds.toDouble();
+                    playProgress = event.inMilliseconds;
+                  });
+                });
+
+                audioPlayer?.onPlayerStateChanged.listen((PlayerState state) {
+                  setState(() {
+                    playing = state == PlayerState.playing;
+                  });
                 });
               },
               child: Text("Next")),
