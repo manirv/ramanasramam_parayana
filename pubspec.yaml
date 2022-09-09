@@ -74,6 +74,15 @@ flutter:
      - music1.mp3
      - bhagavan_sitting.png
      - 11arunachala_mahatmiyam.mp3
+     - tamil_parayana.db
+     - 12arunachala_aksharamanamalai.mp3
+     - 13arunachala_navamanimalai.mp3
+     - 14arunachala_pathigam.mp3
+     - 15arunachala_ashtakam.mp3
+     - 16arunachala_pancharatnam.mp3
+     - 17arunachala_ramanan.mp3
+     - 18vazhthu.mp3
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

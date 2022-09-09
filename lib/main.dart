@@ -7,6 +7,11 @@ import 'package:flutter_lyric/lyrics_reader.dart';
 import 'const.dart';
 import 'dbo.dart';
 
+import 'package:flutter/services.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart' as path;
+import 'dart:io';
+
 void main() {
   runApp(MaterialApp(home: MyApp()));
 }
@@ -25,11 +30,86 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   bool isTap = false;
   static int currentDay = 1;
   static int currentSong = 1;
+  static List<String> songList = [];
 
   bool useEnhancedLrc = false;
+  final _documents = [];
+  List<Map<String, Object?>> _data = [];
+  String _selectedYear = "2022";
+  TextEditingController _yearController = TextEditingController();
+  final DateTime _currentYear = DateTime.now();
+
+  _getdb() async {
+    _documents.clear();
+
+    var dbDir = await getDatabasesPath();
+    var dbPath = path.join(dbDir, "app.db");
+    await deleteDatabase(dbPath);
+    ByteData data = await rootBundle.load("assets/tamil_parayana.db");
+    List<int> bytes =
+        data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+    await File(dbPath).writeAsBytes(bytes);
+    var db = await openDatabase(dbPath);
+    var query =
+        "select day_no,song_id,song_title_no, song_sub_title,song, timed_song from tamil_songs_new where day_no=$currentDay  order by day_no, song_id";
+    db.rawQuery(query).then((value) {
+      List s = value;
+      var prevSongTitle = 0;
+      // List<String> songList = [];
+      var songFullText = "";
+      bool adding = false;
+      for (var i = 0; i < s.length; i++) {
+        // TO DO
+        var row = s[i];
+        var dayNo = row['day_no'];
+        var songText = row['timed_song'];
+        var songId = row['song_id'];
+        var songTitleNo = row['song_title_no'];
+        print('Song title no is: $songTitleNo');
+        print('Song id is: $songId');
+        print('Song is: $songText');
+
+        // if (dayNo == 1 &&
+        //     (songTitleNo == 0 || songTitleNo == 1 || songTitleNo == 2)) {
+        //   if (songText != null) {
+        //     songFullText = "$songFullText\n" + songText;
+        //   }
+        // } else {
+        if (prevSongTitle == songTitleNo) {
+          // ignore: prefer_interpolation_to_compose_strings
+          if (songText != null) {
+            songFullText = "$songFullText\n" + songText;
+          }
+        } else {
+          if (prevSongTitle > 0) {
+            songList.add(songFullText);
+          }
+          songFullText = "";
+          songFullText = songText;
+        }
+        // }
+        prevSongTitle = songTitleNo;
+      } //Enf of For loop
+      // _song.add({
+      //   'song': songFull,
+      //   'link': "http://www.sriramana.org/music/7daytamilparayana/" +
+      //       '11arunachala_mahatmiyam.mp3',
+      //   'song_file_name': '11arunachala_mahatmiyam.mp3',
+      // });
+      // }
+      // setState(() {
+      //   _data = [];
+      //   _data = value;
+      songList.add(songFullText);
+
+      //tamilLyric = songList;
+      //print(songList[0]);
+    });
+  }
+
   var lyricModel = LyricsModelBuilder.create()
-      .bindLyricToMain(tamilLyric[getSongIndex(currentDay, currentSong)])
-      .bindLyricToExt(transLyric)
+      .bindLyricToMain("")
+      .bindLyricToExt("")
       .getModel();
 
   var lyricUI = UINetease();
@@ -47,6 +127,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     lyricUI.lyricBaseLine = LyricBaseLine.CENTER;
     lyricUI.highlight = true;
     lyricUI.highlightDirection = HighlightDirection.LTR;
+    _getdb();
   }
 
   @override
@@ -174,7 +255,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                 var songIndex = getSongIndex(currentDay, currentSong);
                 audioPlayer = null;
                 lyricModel = LyricsModelBuilder.create()
-                    .bindLyricToMain(tamilLyric[songIndex])
+                    .bindLyricToMain(songList[songIndex])
                     .bindLyricToExt(transLyric)
                     .getModel();
                 audioPlayer = AudioPlayer()
@@ -211,9 +292,14 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                 if (audioPlayer == null) {
                   //var localFile = await downloadSong(day, song_no);
                   //var localFile = songs_fullpath_name(day,song_no)
+                  var songIndex = getSongIndex(currentDay, currentSong);
+                  audioPlayer = null;
+                  lyricModel = LyricsModelBuilder.create()
+                      .bindLyricToMain(songList[songIndex])
+                      .bindLyricToExt(transLyric)
+                      .getModel();
                   audioPlayer = AudioPlayer()
-                    ..play(AssetSource(
-                        mp3_tamil_list[getSongIndex(currentDay, currentSong)]));
+                    ..play(AssetSource(mp3_tamil_list[songIndex]));
                   //..play(DeviceFileSource(localFile));
                   setState(() {
                     playing = true;
@@ -265,12 +351,12 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
               onPressed: () async {
                 currentSong = currentSong + 1;
                 audioPlayer?.stop();
-                await getSong(1, 1);
-                var song = await getData();
+                // await getSong(1, 1);
+                // var song = await getData();
                 var songIndex = getSongIndex(currentDay, currentSong);
                 audioPlayer = null;
                 lyricModel = LyricsModelBuilder.create()
-                    .bindLyricToMain(tamilLyric[songIndex])
+                    .bindLyricToMain(songList[songIndex])
                     .bindLyricToExt(transLyric)
                     .getModel();
                 audioPlayer = AudioPlayer()
