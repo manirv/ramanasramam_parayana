@@ -8,6 +8,10 @@ getSongIndex(dayNo, songNo) {
   }
 }
 
+getIndexList() {
+  return songIndex;
+}
+
 var tamilLyric = [];
 
 //   """[00:00.00]அருணாசல மஹாத்மியம்
@@ -381,28 +385,28 @@ final mp3_tamil_list = [
   "21upadesa_undiyar.mp3",
   "22ulladhu_narpadhu.mp3",
   "23ulladhu_narpadhu_anubandham.mp3",
-  "24arunachala_pancharatnam.mp3",
-  "25sri_arunachala_ramana.mp3",
-  "26vazhthu.mp3", // 14
+  // "24arunachala_pancharatnam.mp3",
+  // "25sri_arunachala_ramana.mp3",
+  // "26vazhthu.mp3", // 14
   "31eganma_panchakam.mp3",
   "32appalappattu.mp3",
   "33anma_vidya_keerthanam.mp3",
   "34devikalothram.mp3",
-  "35arunachala_pancharatnam.mp3",
-  "36arunachala_ramanan.mp3",
-  "37vazhthu.mp3", // 21
+  // "35arunachala_pancharatnam.mp3",
+  // "36arunachala_ramanan.mp3",
+  // "37vazhthu.mp3", // 21
   "41athma_sakshatkaraprakaranam.mp3",
   "42bhagavath_geetha_saram.mp3",
-  "43arunachala_pancharatnam.mp3",
-  "44arunachala_ramanan.mp3",
-  "45vazhthu.mp3", // 26
+  // "43arunachala_pancharatnam.mp3",
+  // "44arunachala_ramanan.mp3",
+  // "45vazhthu.mp3", // 26
   "51sri_dakshinamoorthy_thothiram.mp3",
   "52anma_bodham.mp3",
   "53gurusthuthi.mp3",
   "54aththamalagam.mp3",
-  "55arubachala_pancharathnam.mp3",
-  "56arunachala_ramanan.mp3",
-  "57vazhthu.mp3", // 33
+  // "55arubachala_pancharathnam.mp3",
+  // "56arunachala_ramanan.mp3",
+  // "57vazhthu.mp3", // 33
   "61kalai_pattu.mp3",
   "62gummi_pattu.mp3",
   "63ponnolir_pathu.mp3",
@@ -486,11 +490,64 @@ final tamil_songs_list = [
   ["வாழ்க ஸ்வயம் ப்ரகாசம்", "புனர்வசு வண்ணம்", "வேண்டற் பதிகம்"]
 ];
 
+final eng_songs_list = [
+  [
+    "1. Sri Arunachala Mahatmyam",
+    "2. Sri Arunachala Akshara Mana Malai",
+    "3. Sri Arunachala Nava Mani Malai",
+    "4. Sri Arunachala Padikam",
+    "5. Sri Arunachala Ashtakam",
+    "6. Sri Arunachala Pancharatnam",
+    "7. Arunachala Ramanan",
+    "8. Vazhthu"
+  ],
+  [
+    "1. Upadesa Undiyar",
+    "2. Ulladu Narpadu",
+    "3. Ulladu Narpadu Anubandam",
+    "4. Sri Arunachala Pancharatnam",
+    "5. Arunachala Ramanan",
+    "6. Vazhthu"
+  ],
+  [
+    "1. Ekanma Panchakam",
+    "2. Appalap Pattu",
+    "3. Anma Viddai",
+    "4. Devikalottaram Jnanachara Vichara Patalam",
+    "5. Sri Arunachala Pancharatnam",
+    "6. Arunachala Ramanan",
+    "7. Vazhthu"
+  ],
+  [
+    "1. Sarva Jnanottaram: Anma Sakshatkara Prakaranam",
+    "2. Bhagavat Gita Saram",
+    "3. Sri Arunachala Pancharatnam",
+    "4. Arunachala Ramanan",
+    "5. Vazhthu"
+  ],
+  [
+    "1. Sri Dhakinamurti Stotram",
+    "2. Anma Bhodam",
+    "3. Sri Guri Studi",
+    "4. Sri Hastamalaka Stotram",
+    "5. Sri Arunachala Pancharatnam",
+    "6. Arunachala Ramanan",
+    "7. Vazhthu"
+  ],
+  [
+    "1. Kalai Pattu",
+    "2. Kummi Pattu",
+    "3. Ponnolir Pathu",
+    "4. Ponnaiyotha Pathu",
+    "5. Sri Ramana Sadguru",
+  ]
+];
+
 var songIndex = [
   [0, 1, 2, 3, 4, 5, 6, 7],
-  [8, 9, 10, 11, 12, 13],
-  [14, 15, 16, 17, 18, 19, 20],
+  [8, 9, 10, 5, 6, 7],
+  [11, 12, 13, 14, 5, 6, 7],
+  [15, 16, 5, 6, 7],
+  [17, 18, 19, 20, 5, 6, 7],
   [21, 22, 23, 24, 25],
-  [26, 27, 28, 29, 20, 31, 32],
-  [33, 34, 35, 36, 37],
 ];

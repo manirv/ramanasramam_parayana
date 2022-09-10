@@ -67,41 +67,41 @@ class _DaysListPageState extends State<DaysListPage> {
                       fit: BoxFit.fill),
                 ),
               ),
-              SizedBox(height: screenHeight / 40),
-              GestureDetector(
-                  onTap: () async {
-                    setState(() {
-                      currentDay=1;
-                      currentSong=1;
-                    });
-                    Navigator.pushNamed(context, '/playPage');
-                  },
-                  child: Container(
-                      margin: const EdgeInsets.only(left: 10.0, right: 10.0),
-                      padding: const EdgeInsets.all(10.0),
-                      decoration: const BoxDecoration(
-                        color: Colors.purpleAccent,
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Image.asset(
-                            "assets/images/flower3@2x.png",
-                            width: screenWidth * 0.1,
-                          ),
-                          SizedBox(
-                            width: screenWidth * 0.7,
-                            child: Text(
-                              "Play Page",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: screenWidth / 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      ))),
+              // SizedBox(height: screenHeight / 40),
+              // GestureDetector(
+              //     onTap: () async {
+              //       setState(() {
+              //         currentDay = 1;
+              //         currentSong = 1;
+              //       });
+              //       Navigator.pushNamed(context, '/playPage');
+              //     },
+              //     child: Container(
+              //         margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+              //         padding: const EdgeInsets.all(10.0),
+              //         decoration: const BoxDecoration(
+              //           color: Colors.purpleAccent,
+              //           borderRadius: BorderRadius.all(Radius.circular(5.0)),
+              //         ),
+              //         child: Row(
+              //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //           children: [
+              //             Image.asset(
+              //               "assets/images/flower3@2x.png",
+              //               width: screenWidth * 0.1,
+              //             ),
+              //             SizedBox(
+              //               width: screenWidth * 0.7,
+              //               child: Text(
+              //                 "Play Page",
+              //                 style: TextStyle(
+              //                     color: Colors.white,
+              //                     fontSize: screenWidth / 20,
+              //                     fontWeight: FontWeight.bold),
+              //               ),
+              //             ),
+              //           ],
+              //         ))),
               SizedBox(height: screenHeight / 50),
               GestureDetector(
                   onTap: () async {

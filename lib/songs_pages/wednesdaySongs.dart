@@ -80,12 +80,18 @@ class _WednesdaySongsState extends State<WednesdaySongs> {
             ),
             SizedBox(height: screenHeight / 50),
             ListView.builder(
-                itemCount: tamil_songs_list[currentDay].length,
+                itemCount: tamil_songs_list[2].length,
                 physics: const AlwaysScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
-                      onTap: () async {},
+                      onTap: () async {
+                        setState(() {
+                          currentDay = 3;
+                          currentSong = index + 1;
+                        });
+                        Navigator.pushNamed(context, '/playPage');
+                      },
                       child: Container(
                           margin: const EdgeInsets.only(
                               left: 10.0, right: 10.0, bottom: 5.0),
@@ -105,7 +111,9 @@ class _WednesdaySongsState extends State<WednesdaySongs> {
                               SizedBox(
                                 width: screenWidth * 0.7,
                                 child: Text(
-                                  tamil_songs_list[currentDay][index],
+                                  selectedLanguage == "Tamil"
+                                      ? tamil_songs_list[2][index]
+                                      : eng_songs_list[2][index],
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: screenWidth / 20,

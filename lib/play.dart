@@ -12,15 +12,25 @@ import 'const.dart';
 import 'dbo.dart';
 
 class PlayPage extends StatefulWidget {
-  const PlayPage({super.key});
+  final AudioPlayer audioPlayer;
+
+  PlayPage({
+    Key? key,
+    required this.audioPlayer, // here we set first value
+  }) : super(key: key);
+
+  //  PlayPage(
+  //        Key? key,
+  //    required this.audioPlayer,}
+  //   {super.key});
 
   @override
   State<PlayPage> createState() => _PlayPageState();
 }
 
-class _PlayPageState extends State<PlayPage>
-    with SingleTickerProviderStateMixin {
-  AudioPlayer? audioPlayer;
+class _PlayPageState extends State<PlayPage> {
+  // with SingleTickerProviderStateMixin {
+  late AudioPlayer? audioPlayer = widget.audioPlayer;
   double sliderProgress = 0;
   //111658;
   int playProgress = 0; //111658;
@@ -29,13 +39,10 @@ class _PlayPageState extends State<PlayPage>
   //static int currentDay = 1;
   //static int currentSong = 1;
   static List<String> songList = [];
+  static List<String> engSongList = [];
 
   bool useEnhancedLrc = false;
   final _documents = [];
-  List<Map<String, Object?>> _data = [];
-  String _selectedYear = "2022";
-  TextEditingController _yearController = TextEditingController();
-  final DateTime _currentYear = DateTime.now();
 
   _getdb() async {
     _documents.clear();
@@ -49,12 +56,13 @@ class _PlayPageState extends State<PlayPage>
     await File(dbPath).writeAsBytes(bytes);
     var db = await openDatabase(dbPath);
     var query =
-        "select day_no,song_id,song_title_no, song_sub_title,song, timed_song from tamil_songs_new where day_no=$currentDay  order by day_no, song_id";
-    db.rawQuery(query).then((value) {
+        "select day_no,song_id,song_title_no, song_sub_title,song, timed_song from tamil_songs_new where timed_song is not null  order by day_no, song_id";
+    await db.rawQuery(query).then((value) async {
       List s = value;
       var prevSongTitle = 0;
       // List<String> songList = [];
       var songFullText = "";
+      var engSongFullText = "";
       bool adding = false;
       for (var i = 0; i < s.length; i++) {
         // TO DO
@@ -100,16 +108,80 @@ class _PlayPageState extends State<PlayPage>
       //   _data = value;
       songList.add(songFullText);
 
-      //tamilLyric = songList;
-      //print(songList[0]);
+      var engQuery =
+          "select day_no,song_id,song_title_no, song_sub_title,song, timed_song from eng_songs_new where timed_song is not null  order by day_no, song_id";
+      await db.rawQuery(engQuery).then((value) {
+        List s = value;
+        var prevSongTitle = 0;
+        // List<String> songList = [];
+        var songFullText = "";
+        bool adding = false;
+        for (var i = 0; i < s.length; i++) {
+          // TO DO
+          var row = s[i];
+          var dayNo = row['day_no'];
+          var songText = row['timed_song'];
+          var songId = row['song_id'];
+          var songTitleNo = row['song_title_no'];
+          print('Song title no is: $songTitleNo');
+          print('Song id is: $songId');
+          print('Song is: $songText');
+
+          // if (dayNo == 1 &&
+          //     (songTitleNo == 0 || songTitleNo == 1 || songTitleNo == 2)) {
+          //   if (songText != null) {
+          //     songFullText = "$songFullText\n" + songText;
+          //   }
+          // } else {
+          if (prevSongTitle == songTitleNo) {
+            // ignore: prefer_interpolation_to_compose_strings
+            if (songText != null) {
+              songFullText = "$songFullText\n" + songText;
+            }
+          } else {
+            if (prevSongTitle > 0) {
+              engSongList.add(songFullText);
+            }
+            songFullText = "";
+            songFullText = songText;
+          }
+          // }
+          prevSongTitle = songTitleNo;
+        } //Enf of For loop
+        // _song.add({
+        //   'song': songFull,
+        //   'link': "http://www.sriramana.org/music/7daytamilparayana/" +
+        //       '11arunachala_mahatmiyam.mp3',
+        //   'song_file_name': '11arunachala_mahatmiyam.mp3',
+        // });
+        // }
+        // setState(() {
+        //   _data = [];
+        //   _data = value;
+        engSongList.add(songFullText);
+
+        //tamilLyric = songList;
+        print(engSongList[0]);
+        lyricModel = LyricsModelBuilder.create()
+            .bindLyricToMain(
+                getLyricsList()[getSongIndex(currentDay, currentSong)])
+            .bindLyricToExt("")
+            .getModel();
+        setState(() {
+          //currentSong = currentSong + 1;
+        });
+      });
     });
   }
 
-  var lyricModel = LyricsModelBuilder.create()
+  static getLyricsList() {
+    return selectedLanguage == "Tamil" ? songList : engSongList;
+  }
+
+  late var lyricModel = LyricsModelBuilder.create()
       .bindLyricToMain("")
       .bindLyricToExt("")
       .getModel();
-
   var lyricUI = UINetease();
 
   @override
@@ -126,6 +198,13 @@ class _PlayPageState extends State<PlayPage>
     lyricUI.highlight = true;
     lyricUI.highlightDirection = HighlightDirection.LTR;
     _getdb();
+  }
+
+  @override
+  void dispose() {
+    audioPlayer?.stop();
+    audioPlayer?.seek(Duration(milliseconds: 0));
+    super.dispose();
   }
 
   @override
@@ -172,7 +251,7 @@ class _PlayPageState extends State<PlayPage>
           size: Size(double.infinity, screenHeight / 1.5),
           emptyBuilder: () => Center(
             child: Text(
-              "No lyrics",
+              "Click on Play Button to Play with Verses",
               style: lyricUI.getOtherMainTextStyle(),
             ),
           ),
@@ -228,18 +307,22 @@ class _PlayPageState extends State<PlayPage>
           activeColor: Colors.blueGrey,
           inactiveColor: Colors.blue,
           onChanged: (double value) {
-            setState(() {
-              sliderProgress = value;
-            });
+            if (mounted) {
+              setState(() {
+                sliderProgress = value;
+              });
+            }
           },
           onChangeStart: (double value) {
             isTap = true;
           },
           onChangeEnd: (double value) {
             isTap = false;
-            setState(() {
-              playProgress = value.toInt();
-            });
+            if (mounted) {
+              setState(() {
+                playProgress = value.toInt();
+              });
+            }
             audioPlayer?.seek(Duration(milliseconds: value.toInt()));
           },
         ),
@@ -247,137 +330,89 @@ class _PlayPageState extends State<PlayPage>
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           TextButton(
-              onPressed: () async {
-                audioPlayer?.stop();
+            onPressed: () async {
+              audioPlayer?.stop();
+              prevSong();
+              setState(() {
+                // currentSong = currentSong - 1;
+              });
+              var songIndex = getSongIndex(currentDay, currentSong);
+              //audioPlayer = null;
+              lyricModel = LyricsModelBuilder.create()
+                  .bindLyricToMain(getLyricsList()[songIndex])
+                  .bindLyricToExt(transLyric)
+                  .getModel();
+              audioPlayer //= AudioPlayer()
+                  ?.play(AssetSource(mp3_tamil_list[songIndex]));
+              // ..play(AssetSource(mp3_tamil_list[songIndex]));
+              //..play(DeviceFileSource(localFile));
+              setState(() {
+                playing = true;
+              });
+              audioPlayer?.onDurationChanged.listen((Duration event) {
+                if (!mounted) return;
                 setState(() {
-                  currentSong = currentSong - 1;
+                  max_value = event.inMilliseconds.toDouble();
                 });
+              });
+              audioPlayer?.onPositionChanged.listen((Duration event) {
+                if (isTap) return;
+                if (!mounted) return;
+                setState(() {
+                  sliderProgress = event.inMilliseconds.toDouble();
+                  playProgress = event.inMilliseconds;
+                });
+              });
+
+              audioPlayer?.onPlayerStateChanged.listen((PlayerState state) {
+                if (!mounted) return;
+                setState(() {
+                  playing = state == PlayerState.playing;
+                });
+              });
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.skip_previous), // icon
+                Text("Prev") // text
+              ],
+            ),
+          ),
+          Container(
+            width: 10,
+          ),
+          TextButton(
+            onPressed: () async {
+              if (audioPlayer != null) {
+                //var localFile = await downloadSong(day, song_no);
+                //var localFile = songs_fullpath_name(day,song_no)
+                print("===== currentDay:$currentDay");
+                print("===== currentSong:$currentSong");
                 var songIndex = getSongIndex(currentDay, currentSong);
-                audioPlayer = null;
-                lyricModel = LyricsModelBuilder.create()
-                    .bindLyricToMain(songList[songIndex])
-                    .bindLyricToExt(transLyric)
-                    .getModel();
-                audioPlayer = AudioPlayer()
-                  ..play(AssetSource(mp3_tamil_list[songIndex]));
-                //..play(DeviceFileSource(localFile));
-                setState(() {
-                  playing = true;
-                });
-                audioPlayer?.onDurationChanged.listen((Duration event) {
-                  setState(() {
-                    max_value = event.inMilliseconds.toDouble();
-                  });
-                });
-                audioPlayer?.onPositionChanged.listen((Duration event) {
-                  if (isTap) return;
-                  setState(() {
-                    sliderProgress = event.inMilliseconds.toDouble();
-                    playProgress = event.inMilliseconds;
-                  });
-                });
-
-                audioPlayer?.onPlayerStateChanged.listen((PlayerState state) {
-                  setState(() {
-                    playing = state == PlayerState.playing;
-                  });
-                });
-              },
-              child: const Text("Prev")),
-          Container(
-            width: 10,
-          ),
-          TextButton(
-              onPressed: () async {
-                if (audioPlayer == null) {
-                  //var localFile = await downloadSong(day, song_no);
-                  //var localFile = songs_fullpath_name(day,song_no)
-                  print("===== currentDay:$currentDay");
-                  print("===== currentSong:$currentSong");
-                  var songIndex = getSongIndex(currentDay, currentSong);
-                  print("=================================>");
-                  print("========$currentDay=======$currentSong");
-                  audioPlayer = null;
-                  lyricModel = LyricsModelBuilder.create()
-                      .bindLyricToMain(songList[songIndex])
-                      .bindLyricToExt(transLyric)
-                      .getModel();
-                  audioPlayer = AudioPlayer()
-                    ..play(AssetSource(mp3_tamil_list[songIndex]));
-                  //..play(DeviceFileSource(localFile));
-                  setState(() {
-                    playing = true;
-                  });
-                  audioPlayer?.onDurationChanged.listen((Duration event) {
-                    setState(() {
-                      max_value = event.inMilliseconds.toDouble();
-                    });
-                  });
-                  audioPlayer?.onPositionChanged.listen((Duration event) {
-                    if (isTap) return;
-                    setState(() {
-                      sliderProgress = event.inMilliseconds.toDouble();
-                      playProgress = event.inMilliseconds;
-                    });
-                  });
-
-                  audioPlayer?.onPlayerStateChanged.listen((PlayerState state) {
-                    setState(() {
-                      playing = state == PlayerState.playing;
-                    });
-                  });
-                } else {
-                  audioPlayer?.resume();
-                }
-              },
-              child: const Text("Play")),
-          Container(
-            width: 10,
-          ),
-          TextButton(
-              onPressed: () async {
-                audioPlayer?.pause();
-              },
-              child: const Text("Pause")),
-          Container(
-            width: 10,
-          ),
-          TextButton(
-              onPressed: () async {
-                audioPlayer?.stop();
+                print("=================================>");
+                print("========$currentDay=======$currentSong");
                 //audioPlayer = null;
-              },
-              child: const Text("Stop")),
-          Container(
-            width: 10,
-          ),
-          TextButton(
-              onPressed: () async {
-                audioPlayer?.stop();
-                setState(() {
-                  currentSong = currentSong + 1;
-                });
-                // await getSong(1, 1);
-                // var song = await getData();
-                var songIndex = getSongIndex(currentDay, currentSong);
-                audioPlayer = null;
                 lyricModel = LyricsModelBuilder.create()
-                    .bindLyricToMain(songList[songIndex])
+                    .bindLyricToMain(getLyricsList()[songIndex])
                     .bindLyricToExt(transLyric)
                     .getModel();
-                audioPlayer = AudioPlayer()
-                  ..play(AssetSource(mp3_tamil_list[songIndex]));
+                audioPlayer //= AudioPlayer()
+                    ?.play(AssetSource(mp3_tamil_list[songIndex]));
                 //..play(DeviceFileSource(localFile));
+                if (!mounted) return;
                 setState(() {
                   playing = true;
                 });
                 audioPlayer?.onDurationChanged.listen((Duration event) {
+                  if (!mounted) return;
                   setState(() {
                     max_value = event.inMilliseconds.toDouble();
                   });
                 });
                 audioPlayer?.onPositionChanged.listen((Duration event) {
                   if (isTap) return;
+                  if (!mounted) return;
                   setState(() {
                     sliderProgress = event.inMilliseconds.toDouble();
                     playProgress = event.inMilliseconds;
@@ -385,12 +420,108 @@ class _PlayPageState extends State<PlayPage>
                 });
 
                 audioPlayer?.onPlayerStateChanged.listen((PlayerState state) {
+                  if (!mounted) return;
                   setState(() {
                     playing = state == PlayerState.playing;
                   });
                 });
-              },
-              child: const Text("Next")),
+              } else {
+                // audioPlayer?.resume();
+              }
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.play_arrow), // icon
+                Text("Play") // text
+              ],
+            ),
+          ),
+          Container(
+            width: 10,
+          ),
+          TextButton(
+            onPressed: () async {
+              audioPlayer?.pause();
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.pause), // icon
+                Text("Pause") // text
+              ],
+            ),
+          ),
+          Container(
+            width: 10,
+          ),
+          TextButton(
+            onPressed: () async {
+              audioPlayer?.stop();
+              //audioPlayer = null;
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.stop), // icon
+                Text("Stop") // text
+              ],
+            ),
+          ),
+          Container(
+            width: 10,
+          ),
+          TextButton(
+            onPressed: () async {
+              audioPlayer?.stop();
+              nextSong();
+              setState(() {
+                //currentSong = currentSong + 1;
+              });
+              // await getSong(1, 1);
+              // var song = await getData();
+              var songIndex = getSongIndex(currentDay, currentSong);
+              // audioPlayer = null;
+              lyricModel = LyricsModelBuilder.create()
+                  .bindLyricToMain(getLyricsList()[songIndex])
+                  .bindLyricToExt(transLyric)
+                  .getModel();
+              audioPlayer //= AudioPlayer()
+                  ?.play(AssetSource(mp3_tamil_list[songIndex]));
+              //..play(DeviceFileSource(localFile));
+              setState(() {
+                playing = true;
+              });
+              audioPlayer?.onDurationChanged.listen((Duration event) {
+                if (!mounted) return;
+                setState(() {
+                  max_value = event.inMilliseconds.toDouble();
+                });
+              });
+              audioPlayer?.onPositionChanged.listen((Duration event) {
+                if (isTap) return;
+                if (!mounted) return;
+                setState(() {
+                  sliderProgress = event.inMilliseconds.toDouble();
+                  playProgress = event.inMilliseconds;
+                });
+              });
+
+              audioPlayer?.onPlayerStateChanged.listen((PlayerState state) {
+                if (!mounted) return;
+                setState(() {
+                  playing = state == PlayerState.playing;
+                });
+              });
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.skip_next), // icon
+                Text("Next") // text
+              ],
+            ),
+          ),
         ],
       ),
     ];
