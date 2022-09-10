@@ -42,7 +42,7 @@ class _LandingPageState extends State<LandingPage> {
                     color: Colors.white,
                     fontSize: screenWidth / 20,
                     fontWeight: FontWeight.bold)),
-            SizedBox(height: screenHeight / 40),
+            SizedBox(height: screenHeight / 200),
             Text('The Poetic Works of \n Bhagavan Sri Ramana Maharshi',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -71,7 +71,70 @@ class _LandingPageState extends State<LandingPage> {
                         SizedBox(
                           width: screenWidth * 0.7,
                           child: Text(
-                            "Tamil Parayana",
+                            "About Tamil Parayana",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: screenWidth / 20,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ))),
+            SizedBox(height: screenHeight / 4000),
+            GestureDetector(
+                onTap: () async {
+                  Navigator.pushNamed(context, '/daysPage');
+                },
+                child: Container(
+                    margin: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(10.0),
+                    decoration: const BoxDecoration(
+                      color: Colors.purpleAccent,
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.asset(
+                          "assets/images/bhagavanround2.png",
+                          width: screenWidth * 0.1,
+                        ),
+                        SizedBox(
+                          width: screenWidth * 0.7,
+                          // (வரலாறு)
+                          child: Text(
+                            "History of Parayana \nat Sri Ramanasramam ",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: screenWidth / 20,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ))),
+            SizedBox(height: screenHeight / 4000),
+            GestureDetector(
+                onTap: () async {
+                  Navigator.pushNamed(context, '/daysPage');
+                },
+                child: Container(
+                    margin: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(10.0),
+                    decoration: const BoxDecoration(
+                      color: Colors.purpleAccent,
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.asset(
+                          "assets/images/bhagavanround2.png",
+                          width: screenWidth * 0.1,
+                        ),
+                        SizedBox(
+                          width: screenWidth * 0.7,
+                          child: Text(
+                            "Chant Tamil Parayana",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: screenWidth / 20,

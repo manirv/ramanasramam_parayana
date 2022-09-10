@@ -148,16 +148,6 @@ class _PlayPageState extends State<PlayPage> {
           // }
           prevSongTitle = songTitleNo;
         } //Enf of For loop
-        // _song.add({
-        //   'song': songFull,
-        //   'link': "http://www.sriramana.org/music/7daytamilparayana/" +
-        //       '11arunachala_mahatmiyam.mp3',
-        //   'song_file_name': '11arunachala_mahatmiyam.mp3',
-        // });
-        // }
-        // setState(() {
-        //   _data = [];
-        //   _data = value;
         engSongList.add(songFullText);
 
         //tamilLyric = songList;
