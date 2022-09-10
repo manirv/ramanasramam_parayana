@@ -45,7 +45,6 @@ flutter:
   
   assets:
      - assets/images/
-     - bhagavan_sitting.png
      - 11arunachala_mahatmiyam.mp3
      - tamil_parayana.db
      - 12arunachala_aksharamanamalai.mp3

@@ -193,7 +193,7 @@ class _PlayPageState extends State<PlayPage> {
   @override
   void dispose() {
     audioPlayer?.stop();
-    audioPlayer?.seek(Duration(milliseconds: 0));
+    audioPlayer?.seek(const Duration(milliseconds: 0));
     super.dispose();
   }
 
@@ -201,8 +201,76 @@ class _PlayPageState extends State<PlayPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sri Ramanasramam Parayana'),
-      ),
+          title: const Text('Sri Ramanasramam Parayana'),
+          leadingWidth: screenWidth / 11,
+          actions: [
+            PopupMenuButton<Widget>(
+              position: PopupMenuPosition.under,
+              color: Colors.purple,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20.0),
+                ),
+              ),
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  enabled: false,
+                  textStyle: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  child: Text("Select Language"),
+                ),
+                const PopupMenuDivider(
+                  height: 0,
+                ),
+                PopupMenuItem(
+                  textStyle: TextStyle(
+                      color: selectedLanguage == "Tamil"
+                          ? Colors.white
+                          : Colors.black),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      selectedLanguage == "Tamil"
+                          ? const Icon(Icons.check)
+                          : Container(),
+                      const SizedBox(width: 5.0),
+                      const Text("Tamil"),
+                    ],
+                  ),
+                  onTap: () {
+                    audioPlayer!.stop();
+                    setState(() {
+                      selectedLanguage = "Tamil";
+                    });
+                  },
+                ),
+                PopupMenuItem(
+                  textStyle: TextStyle(
+                      color: selectedLanguage == "English"
+                          ? Colors.white
+                          : Colors.black),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      selectedLanguage == "English"
+                          ? const Icon(Icons.check)
+                          : Container(),
+                      const SizedBox(width: 5.0),
+                      const Text("English"),
+                    ],
+                  ),
+                  onTap: () async {
+                    audioPlayer!.stop();
+                    setState(() {
+                      selectedLanguage = "English";
+                    });
+                  },
+                ),
+              ],
+            )
+          ]),
       body: buildContainer(),
     );
   }
@@ -294,8 +362,8 @@ class _PlayPageState extends State<PlayPage> {
           max: max_value,
           label: sliderProgress.toString(),
           value: sliderProgress,
-          activeColor: Colors.blueGrey,
-          inactiveColor: Colors.blue,
+          activeColor: Colors.purpleAccent,
+          // inactiveColor: Colors.,
           onChanged: (double value) {
             if (mounted) {
               setState(() {
@@ -363,7 +431,7 @@ class _PlayPageState extends State<PlayPage> {
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              children: const <Widget>[
                 Icon(Icons.skip_previous), // icon
                 Text("Prev") // text
               ],
@@ -374,74 +442,132 @@ class _PlayPageState extends State<PlayPage> {
           ),
           TextButton(
             onPressed: () async {
-              if (audioPlayer != null) {
-                //var localFile = await downloadSong(day, song_no);
-                //var localFile = songs_fullpath_name(day,song_no)
-                print("===== currentDay:$currentDay");
-                print("===== currentSong:$currentSong");
-                var songIndex = getSongIndex(currentDay, currentSong);
-                print("=================================>");
-                print("========$currentDay=======$currentSong");
-                //audioPlayer = null;
-                lyricModel = LyricsModelBuilder.create()
-                    .bindLyricToMain(getLyricsList()[songIndex])
-                    .bindLyricToExt(transLyric)
-                    .getModel();
-                audioPlayer //= AudioPlayer()
-                    ?.play(AssetSource(mp3_tamil_list[songIndex]));
-                //..play(DeviceFileSource(localFile));
-                if (!mounted) return;
-                setState(() {
-                  playing = true;
-                });
-                audioPlayer?.onDurationChanged.listen((Duration event) {
+              if (playing) {
+                audioPlayer!.pause();
+              } else if (!playing) {
+                if (audioPlayer != null) {
+                  //var localFile = await downloadSong(day, song_no);
+                  //var localFile = songs_fullpath_name(day,song_no)
+                  var songIndex = getSongIndex(currentDay, currentSong);
+                  //audioPlayer = null;
+                  lyricModel = LyricsModelBuilder.create()
+                      .bindLyricToMain(getLyricsList()[songIndex])
+                      .bindLyricToExt(transLyric)
+                      .getModel();
+                  audioPlayer //= AudioPlayer()
+                      ?.play(AssetSource(mp3_tamil_list[songIndex]));
+                  //..play(DeviceFileSource(localFile));
                   if (!mounted) return;
                   setState(() {
-                    max_value = event.inMilliseconds.toDouble();
+                    playing = true;
                   });
-                });
-                audioPlayer?.onPositionChanged.listen((Duration event) {
-                  if (isTap) return;
-                  if (!mounted) return;
-                  setState(() {
-                    sliderProgress = event.inMilliseconds.toDouble();
-                    playProgress = event.inMilliseconds;
+                  audioPlayer?.onDurationChanged.listen((Duration event) {
+                    if (!mounted) return;
+                    setState(() {
+                      max_value = event.inMilliseconds.toDouble();
+                    });
                   });
-                });
+                  audioPlayer?.onPositionChanged.listen((Duration event) {
+                    if (isTap) return;
+                    if (!mounted) return;
+                    setState(() {
+                      sliderProgress = event.inMilliseconds.toDouble();
+                      playProgress = event.inMilliseconds;
+                    });
+                  });
 
-                audioPlayer?.onPlayerStateChanged.listen((PlayerState state) {
-                  if (!mounted) return;
-                  setState(() {
-                    playing = state == PlayerState.playing;
+                  audioPlayer?.onPlayerStateChanged.listen((PlayerState state) {
+                    if (!mounted) return;
+                    setState(() {
+                      playing = state == PlayerState.playing;
+                    });
                   });
-                });
-              } else {
-                // audioPlayer?.resume();
+                }
               }
             },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.play_arrow), // icon
-                Text("Play") // text
-              ],
-            ),
+            child: !playing
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const <Widget>[
+                      Icon(Icons.play_arrow), // icon
+                      Text("Play") // text
+                    ],
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const <Widget>[
+                      Icon(Icons.pause), // icon
+                      Text("Pause") // text
+                    ],
+                  ),
           ),
-          Container(
-            width: 10,
-          ),
-          TextButton(
-            onPressed: () async {
-              audioPlayer?.pause();
-            },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.pause), // icon
-                Text("Pause") // text
-              ],
-            ),
-          ),
+
+          // TextButton(
+          //   onPressed: () async {
+          //     if (audioPlayer != null) {
+          //       //var localFile = await downloadSong(day, song_no);
+          //       //var localFile = songs_fullpath_name(day,song_no)
+          //       var songIndex = getSongIndex(currentDay, currentSong);
+          //       //audioPlayer = null;
+          //       lyricModel = LyricsModelBuilder.create()
+          //           .bindLyricToMain(getLyricsList()[songIndex])
+          //           .bindLyricToExt(transLyric)
+          //           .getModel();
+          //       audioPlayer //= AudioPlayer()
+          //           ?.play(AssetSource(mp3_tamil_list[songIndex]));
+          //       //..play(DeviceFileSource(localFile));
+          //       if (!mounted) return;
+          //       setState(() {
+          //         playing = true;
+          //       });
+          //       audioPlayer?.onDurationChanged.listen((Duration event) {
+          //         if (!mounted) return;
+          //         setState(() {
+          //           max_value = event.inMilliseconds.toDouble();
+          //         });
+          //       });
+          //       audioPlayer?.onPositionChanged.listen((Duration event) {
+          //         if (isTap) return;
+          //         if (!mounted) return;
+          //         setState(() {
+          //           sliderProgress = event.inMilliseconds.toDouble();
+          //           playProgress = event.inMilliseconds;
+          //         });
+          //       });
+
+          //       audioPlayer?.onPlayerStateChanged.listen((PlayerState state) {
+          //         if (!mounted) return;
+          //         setState(() {
+          //           playing = state == PlayerState.playing;
+          //         });
+          //       });
+          //     } else {
+          //       // audioPlayer?.resume();
+          //     }
+          //   },
+          //   child: Column(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: const <Widget>[
+          //       CircleAvatar(child: Icon(Icons.play_arrow)), // icon
+          //       Text("Play") // text
+          //     ],
+          //   ),
+          // ),
+          // Container(
+          //   width: 10,
+          // ),
+          // TextButton(
+          //   onPressed: () async {
+          //     audioPlayer?.pause();
+          //   },
+          //   child: Column(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: const <Widget>[
+          //       Icon(Icons.pause), // icon
+          //       Text("Pause") // text
+          //     ],
+          //   ),
+          // ),
           Container(
             width: 10,
           ),
@@ -452,7 +578,7 @@ class _PlayPageState extends State<PlayPage> {
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              children: const <Widget>[
                 Icon(Icons.stop), // icon
                 Text("Stop") // text
               ],
@@ -506,7 +632,7 @@ class _PlayPageState extends State<PlayPage> {
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              children: const <Widget>[
                 Icon(Icons.skip_next), // icon
                 Text("Next") // text
               ],
@@ -523,7 +649,7 @@ class _PlayPageState extends State<PlayPage> {
     return [
       Positioned.fill(
         child: Image.asset(
-          "bhagavan_sitting.png",
+          "assets/images/bhagavan_sitting.png",
           fit: BoxFit.cover,
         ),
       ),

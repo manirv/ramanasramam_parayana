@@ -46,13 +46,13 @@ class _LandingPageState extends State<LandingPage> {
             Text('The Poetic Works of \n Bhagavan Sri Ramana Maharshi',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    color: Color.fromARGB(255, 0, 212, 64),
+                    color: Colors.amberAccent,
                     fontSize: screenWidth / 20,
                     fontWeight: FontWeight.bold)),
             SizedBox(height: screenHeight / 40),
             GestureDetector(
                 onTap: () async {
-                  Navigator.pushNamed(context, '/daysPage');
+                  Navigator.pushNamed(context, '/aboutPage');
                 },
                 child: Container(
                     margin: const EdgeInsets.all(20),
@@ -83,7 +83,7 @@ class _LandingPageState extends State<LandingPage> {
             SizedBox(height: screenHeight / 4000),
             GestureDetector(
                 onTap: () async {
-                  Navigator.pushNamed(context, '/daysPage');
+                  Navigator.pushNamed(context, '/historyPage');
                 },
                 child: Container(
                     margin: const EdgeInsets.all(20),

@@ -1,7 +1,9 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:interactive_tamil_parayana/about.dart';
 // import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:interactive_tamil_parayana/dayslist.dart';
+import 'package:interactive_tamil_parayana/history.dart';
 import 'package:interactive_tamil_parayana/landingPage.dart';
 import 'package:interactive_tamil_parayana/play.dart';
 import 'package:interactive_tamil_parayana/songs_pages/fridaySongs.dart';
@@ -22,7 +24,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     platform = Theme.of(context).platform;
@@ -30,7 +31,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Ramanasramam Parayana ',
       theme: ThemeData(
-        primarySwatch: Colors.teal,
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          primary: Colors.purpleAccent,
+        ),
         textSelectionTheme: const TextSelectionThemeData(
             selectionHandleColor: Colors.transparent),
       ),
@@ -49,8 +52,9 @@ class MyApp extends StatelessWidget {
         '/thursdaySongs': (context) => const ThursdayPage(),
         '/fridaydaySongs': (context) => const FridaySongsPage(),
         '/saturdaySongs': (context) => const SaturdaySongsPage(),
+        '/aboutPage': (context) => const AboutPage(),
+        '/historyPage': (context) => const HistoryPage(),
       },
     );
   }
-
 }
