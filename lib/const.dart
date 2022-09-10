@@ -14,6 +14,7 @@ getIndexList() {
 
 var tamilLyric = [];
 
+
 //   """[00:00.00]அருணாசல மஹாத்மியம்
 // [00:00.05]கருணார் ணவமாய்க் கருதக் கதிநல்கும்
 // [00:07.00]அருணாசல சிவமீதாம்
@@ -563,3 +564,4 @@ var about =
 
 var engAbout =
     """It is said the words of a jnani are equal in power, stature and authority to the cherished Vedas themselves. Indeed this applies to the compositions and translations of Bhagavan Sri Ramana Maharshi who at the age of sixteen attained complete and final liberation. Subsequently Bhagavan Ramana exhibited the extraordinary ability to compress the full breadth of his realization into terse poetic verses. Like mantras, these skilfully crafted arrows of light work on the mind of the reader in a mysterious and powerfully transformative way, bestowing understanding and wisdom on all who encounter them.\n\nWhile Bhagavan wrote very little, having taught mainly through the power of silence, he was not unwilling to answer questions, either verbally or in writing. As long as he felt inquiries were sincere, he responded fully. He composed and corrected his own writings and on occasion reviewed the compositions of others. Moreover he had a gift for languages, even those he had never formally studied (e.g., Malayalam and Telugu). The greatest Sanskrit pandits of his day and since have marvelled at Bhagavan’s Sanskrit compositions, not merely for their grammatical accuracy but their beauty and cogency. Likewise his Tamil compositions are revered by scholars of Tamil literature as works of literary genius. Numerous stories abound surrounding the circumstances in which his compositions came into being. These events still intrigue students of Bhagavan’s works, as they did those who directly witnessed them.\n\nSince the days at Virupaksha Cave, Bhagavan’s devotees have chanted these works and testified time and again to the purifying effect they have on heart, mind and soul. It is these verses that are chanted today at Sri Ramanasramam and comprise the present volume. """;
+
