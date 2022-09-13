@@ -18,6 +18,8 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:interactive_tamil_parayana/const.dart';
 import 'package:path_provider/path_provider.dart';
 
+const debug = false;
+
 class PlayPage extends StatefulWidget {
   final AudioPlayer audioPlayer;
 
@@ -472,14 +474,18 @@ class _PlayPageState extends State<PlayPage> {
                 showToaster(
                     "The requested song is being downloaded! Please wait",
                     context);
-              } else if (tInfo?.status == DownloadTaskStatus.running) {
                 // int? prog = tInfo?.progress;
                 // if (prog! < 5) {
                 //   DownloadUtil._delete(tInfo!);
                 // }
 
+              } else if (tInfo?.status == DownloadTaskStatus.enqueued) {
                 showToaster(
-                    "The requested song is being downloaded! Please play later.",
+                    "Download is still in progress! Please click play again, later.",
+                    context);
+              } else if (tInfo?.status == DownloadTaskStatus.running) {
+                showToaster(
+                    "Download is still in progress! Please click play again, later.",
                     context);
               } else if (tInfo?.status == DownloadTaskStatus.paused) {
                 // int? prog = tInfo?.progress;
@@ -577,8 +583,13 @@ class _PlayPageState extends State<PlayPage> {
                     // setState(() {
                     //   playing = true;
                     // });
+                  } else if (tInfo?.status == DownloadTaskStatus.enqueued) {
                     showToaster(
-                        "The requested song is being downloaded! Please play later.",
+                        "Download is still in progress! Please click play again, later.",
+                        context);
+                  } else if (tInfo?.status == DownloadTaskStatus.running) {
+                    showToaster(
+                        "Download is still in progress! Please click play again, later.",
                         context);
                   } else if (tInfo?.status == DownloadTaskStatus.paused) {
                     DownloadUtil._resumeDownload(tInfo!);
@@ -757,9 +768,13 @@ class _PlayPageState extends State<PlayPage> {
                 showToaster(
                     "The requested song is being downloaded! Please play later.",
                     context);
+              } else if (tInfo?.status == DownloadTaskStatus.enqueued) {
+                showToaster(
+                    "Download is still in progress! Please click play again, later.",
+                    context);
               } else if (tInfo?.status == DownloadTaskStatus.running) {
                 showToaster(
-                    "The requested song is being downloaded! Please play later.",
+                    "Download is still in progress! Please click play again, later.",
                     context);
               } else if (tInfo?.status == DownloadTaskStatus.paused) {
                 DownloadUtil._resumeDownload(tInfo!);
@@ -1233,7 +1248,7 @@ class DownloadUtil {
       _items.add(_ItemHolder(name: _tasks![i].name, task: _tasks![i]));
       _itemsMap[_tasks![i].name] = _tasks![i];
       if (_tasks![i].status == DownloadTaskStatus.complete) {
-        mp3_download_status[i] = true;
+        _itemsMap[_tasks![i].name]!.status = DownloadTaskStatus.complete;
       }
       count++;
     }
@@ -1263,9 +1278,6 @@ class DownloadUtil {
     for (int i = count; i < _tasks!.length; i++) {
       _items.add(_ItemHolder(name: _tasks![i].name, task: _tasks![i]));
       _itemsMap[_tasks![i].name] = _tasks![i];
-      if (_tasks![i].status == DownloadTaskStatus.complete) {
-        mp3_download_status[i] = true;
-      }
       count++;
     }
 
