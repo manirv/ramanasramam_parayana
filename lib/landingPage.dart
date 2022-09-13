@@ -36,7 +36,7 @@ class _LandingPageState extends State<LandingPage> {
                     fit: BoxFit.fill),
               ),
             ),
-            SizedBox(height: screenHeight / 40),
+            SizedBox(height: screenHeight / 4000),
             Text('Parayana At Sri Ramanasramam',
                 style: TextStyle(
                     color: Colors.white,
@@ -49,7 +49,7 @@ class _LandingPageState extends State<LandingPage> {
                     color: Colors.amberAccent,
                     fontSize: screenWidth / 20,
                     fontWeight: FontWeight.bold)),
-            SizedBox(height: screenHeight / 40),
+            SizedBox(height: screenHeight / 4000),
             GestureDetector(
                 onTap: () async {
                   Navigator.pushNamed(context, '/aboutPage');
@@ -65,7 +65,7 @@ class _LandingPageState extends State<LandingPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Image.asset(
-                          "assets/images/bhagavanround2.png",
+                          "assets/images/intro.png",
                           width: screenWidth * 0.1,
                         ),
                         SizedBox(
@@ -96,7 +96,7 @@ class _LandingPageState extends State<LandingPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Image.asset(
-                          "assets/images/bhagavanround2.png",
+                          "assets/images/history.png",
                           width: screenWidth * 0.1,
                         ),
                         SizedBox(
@@ -128,13 +128,43 @@ class _LandingPageState extends State<LandingPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Image.asset(
-                          "assets/images/bhagavanround2.png",
+                          "assets/images/playsong.png",
                           width: screenWidth * 0.1,
                         ),
                         SizedBox(
                           width: screenWidth * 0.7,
                           child: Text(
                             "Chant Tamil Parayana",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: screenWidth / 20,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ))),
+            SizedBox(height: screenHeight / 4000),
+            GestureDetector(
+                onTap: () async {
+                  Navigator.pushNamed(context, '/download');
+                },
+                child: Container(
+                    margin: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(10.0),
+                    decoration: const BoxDecoration(
+                      color: Colors.purpleAccent,
+                      borderRadius: BorderRadius.all(Radius.circular(2.0)),
+                    ),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          "assets/images/playsong.png",
+                          width: screenWidth * 0.1,
+                        ),
+                        SizedBox(
+                          width: screenWidth * 0.7,
+                          child: Text(
+                            "Download Songs",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: screenWidth / 20,

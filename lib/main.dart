@@ -1,7 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:interactive_tamil_parayana/about.dart';
-// import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:interactive_tamil_parayana/dayslist.dart';
 import 'package:interactive_tamil_parayana/history.dart';
 import 'package:interactive_tamil_parayana/landingPage.dart';
@@ -17,7 +17,7 @@ import 'package:interactive_tamil_parayana/utils.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await FlutterDownloader.initialize();
+  await FlutterDownloader.initialize();
   runApp(const MyApp());
 }
 
@@ -54,6 +54,7 @@ class MyApp extends StatelessWidget {
         '/saturdaySongs': (context) => const SaturdaySongsPage(),
         '/aboutPage': (context) => const AboutPage(),
         '/historyPage': (context) => const HistoryPage(),
+        '/download': (context) => downloader,
       },
     );
   }
