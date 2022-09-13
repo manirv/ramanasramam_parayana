@@ -22,10 +22,41 @@ class _ThursdayPageState extends State<ThursdayPage> {
               }),
           leadingWidth: screenWidth / 11,
           actions: [
-            PopupMenuButton<MenuItem>(
+            PopupMenuButton<Widget>(
+              position: PopupMenuPosition.under,
+              color: Colors.purple,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20.0),
+                ),
+              ),
               itemBuilder: (context) => [
+                const PopupMenuItem(
+                  enabled: false,
+                  textStyle: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  child: Text("Select Language"),
+                ),
+                const PopupMenuDivider(
+                  height: 0,
+                ),
                 PopupMenuItem(
-                  child: const Text("Tamil"),
+                  textStyle: TextStyle(
+                      color: selectedLanguage == "Tamil"
+                          ? Colors.white
+                          : Colors.black),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      selectedLanguage == "Tamil"
+                          ? const Icon(Icons.check)
+                          : Container(),
+                      const SizedBox(width: 5.0),
+                      const Text("Tamil"),
+                    ],
+                  ),
                   onTap: () {
                     setState(() {
                       selectedLanguage = "Tamil";
@@ -33,13 +64,26 @@ class _ThursdayPageState extends State<ThursdayPage> {
                   },
                 ),
                 PopupMenuItem(
-                  child: const Text("English"),
+                  textStyle: TextStyle(
+                      color: selectedLanguage == "English"
+                          ? Colors.white
+                          : Colors.black),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      selectedLanguage == "English"
+                          ? const Icon(Icons.check)
+                          : Container(),
+                      const SizedBox(width: 5.0),
+                      const Text("English"),
+                    ],
+                  ),
                   onTap: () async {
                     setState(() {
                       selectedLanguage = "English";
                     });
                   },
-                )
+                ),
               ],
             )
           ]),

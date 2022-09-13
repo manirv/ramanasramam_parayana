@@ -1,15 +1,22 @@
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
+import 'package:interactive_tamil_parayana/dbo%20copy.dart';
+import 'package:interactive_tamil_parayana/download.dart';
 import 'package:interactive_tamil_parayana/utils.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
 import 'const.dart';
-import 'dbo.dart';
+
+import 'package:android_path_provider/android_path_provider.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:interactive_tamil_parayana/const.dart';
+import 'package:path_provider/path_provider.dart';
 
 class PlayPage extends StatefulWidget {
   final AudioPlayer audioPlayer;
@@ -32,6 +39,9 @@ class _PlayPageState extends State<PlayPage> {
   // with SingleTickerProviderStateMixin {
   late AudioPlayer? audioPlayer = widget.audioPlayer;
   double sliderProgress = 0;
+  static GlobalPlatformInterface get _global => AudioPlayer.global;
+  AudioContextConfig config = AudioContextConfig();
+
   //111658;
   int playProgress = 0; //111658;
   double max_value = 211658;
@@ -43,9 +53,11 @@ class _PlayPageState extends State<PlayPage> {
 
   bool useEnhancedLrc = false;
   final _documents = [];
+  late String localPath;
 
   _getdb() async {
     _documents.clear();
+    DownloadUtil._findLocalPath().then((value) => localPath = value!);
 
     var dbDir = await getDatabasesPath();
     var dbPath = path.join(dbDir, "app.db");
@@ -71,10 +83,11 @@ class _PlayPageState extends State<PlayPage> {
         var songText = row['timed_song'];
         var songId = row['song_id'];
         var songTitleNo = row['song_title_no'];
-        print('Song title no is: $songTitleNo');
-        print('Song id is: $songId');
-        print('Song is: $songText');
-
+        if (debug) {
+          print('Song title no is: $songTitleNo');
+          print('Song id is: $songId');
+          print('Song is: $songText');
+        }
         // if (dayNo == 1 &&
         //     (songTitleNo == 0 || songTitleNo == 1 || songTitleNo == 2)) {
         //   if (songText != null) {
@@ -123,10 +136,11 @@ class _PlayPageState extends State<PlayPage> {
           var songText = row['timed_song'];
           var songId = row['song_id'];
           var songTitleNo = row['song_title_no'];
-          print('Song title no is: $songTitleNo');
-          print('Song id is: $songId');
-          print('Song is: $songText');
-
+          if (debug) {
+            print('Song title no is: $songTitleNo');
+            print('Song id is: $songId');
+            print('Song is: $songText');
+          }
           // if (dayNo == 1 &&
           //     (songTitleNo == 0 || songTitleNo == 1 || songTitleNo == 2)) {
           //   if (songText != null) {
@@ -151,12 +165,16 @@ class _PlayPageState extends State<PlayPage> {
         engSongList.add(songFullText);
 
         //tamilLyric = songList;
-        print(engSongList[0]);
+        if (debug) {
+          print(engSongList[0]);
+        }
         lyricModel = LyricsModelBuilder.create()
             .bindLyricToMain(
                 getLyricsList()[getSongIndex(currentDay, currentSong)])
             .bindLyricToExt("")
             .getModel();
+        DownloadUtil._getFilesList();
+        _global.setGlobalAudioContext(config.build());
         setState(() {
           //currentSong = currentSong + 1;
         });
@@ -193,7 +211,7 @@ class _PlayPageState extends State<PlayPage> {
   @override
   void dispose() {
     audioPlayer?.stop();
-    audioPlayer?.seek(Duration(milliseconds: 0));
+    audioPlayer?.seek(const Duration(milliseconds: 0));
     super.dispose();
   }
 
@@ -201,8 +219,114 @@ class _PlayPageState extends State<PlayPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sri Ramanasramam Parayana'),
-      ),
+          title: const Text('Sri Ramana Parayana'),
+          leadingWidth: screenWidth / 11,
+          actions: [
+            PopupMenuButton<Widget>(
+              position: PopupMenuPosition.under,
+              color: Colors.purple,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20.0),
+                ),
+              ),
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  enabled: false,
+                  textStyle: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                  child: Text("Select Language"),
+                ),
+                const PopupMenuDivider(
+                  height: 0,
+                ),
+                PopupMenuItem(
+                  textStyle: TextStyle(
+                      color: selectedLanguage == "Tamil"
+                          ? Colors.white
+                          : Colors.black),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      selectedLanguage == "Tamil"
+                          ? const Icon(Icons.check)
+                          : Container(),
+                      const SizedBox(width: 5.0),
+                      const Text("Tamil"),
+                    ],
+                  ),
+                  onTap: () {
+                    // audioPlayer!.stop();
+                    setState(() {
+                      selectedLanguage = "Tamil";
+                      lyricModel = LyricsModelBuilder.create()
+                          .bindLyricToMain(getLyricsList()[
+                              getSongIndex(currentDay, currentSong)])
+                          .bindLyricToExt("")
+                          .getModel();
+                      refreshLyric();
+                    });
+                  },
+                ),
+                PopupMenuItem(
+                  textStyle: TextStyle(
+                      color: selectedLanguage == "English"
+                          ? Colors.white
+                          : Colors.black),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      selectedLanguage == "English"
+                          ? const Icon(Icons.check)
+                          : Container(),
+                      const SizedBox(width: 5.0),
+                      const Text("English"),
+                    ],
+                  ),
+                  onTap: () async {
+                    // audioPlayer!.stop();
+                    setState(() {
+                      selectedLanguage = "English";
+                      lyricModel = LyricsModelBuilder.create()
+                          .bindLyricToMain(getLyricsList()[
+                              getSongIndex(currentDay, currentSong)])
+                          .bindLyricToExt("")
+                          .getModel();
+                      refreshLyric();
+                    });
+                  },
+                ),
+                // const PopupMenuItem(
+                //   enabled: false,
+                //   textStyle: TextStyle(
+                //     fontWeight: FontWeight.bold,
+                //     color: Colors.black,
+                //   ),
+                //   child: Text("Settings"),
+                // ),
+                // const PopupMenuDivider(
+                //   height: 0,
+                // ),
+                // PopupMenuItem(
+                //   textStyle: TextStyle(color: Colors.white),
+                //   child: Row(
+                //     crossAxisAlignment: CrossAxisAlignment.center,
+                //     children: [
+                //       const Icon(Icons.download),
+                //       const Text("Download Manager"),
+                //     ],
+                //   ),
+                //   onTap: () {
+                //     audioPlayer!.stop();
+                //     Navigator.pushNamed(context, '/download');
+                //     setState(() {});
+                //   },
+                // ),
+              ],
+            )
+          ]),
       body: buildContainer(),
     );
   }
@@ -294,8 +418,8 @@ class _PlayPageState extends State<PlayPage> {
           max: max_value,
           label: sliderProgress.toString(),
           value: sliderProgress,
-          activeColor: Colors.blueGrey,
-          inactiveColor: Colors.blue,
+          activeColor: Colors.purpleAccent,
+          // inactiveColor: Colors.,
           onChanged: (double value) {
             if (mounted) {
               setState(() {
@@ -321,6 +445,7 @@ class _PlayPageState extends State<PlayPage> {
         children: [
           TextButton(
             onPressed: () async {
+              DownloadUtil._refreshTasks();
               audioPlayer?.stop();
               prevSong();
               setState(() {
@@ -332,65 +457,45 @@ class _PlayPageState extends State<PlayPage> {
                   .bindLyricToMain(getLyricsList()[songIndex])
                   .bindLyricToExt(transLyric)
                   .getModel();
-              audioPlayer //= AudioPlayer()
-                  ?.play(AssetSource(mp3_tamil_list[songIndex]));
-              // ..play(AssetSource(mp3_tamil_list[songIndex]));
-              //..play(DeviceFileSource(localFile));
-              setState(() {
-                playing = true;
-              });
-              audioPlayer?.onDurationChanged.listen((Duration event) {
-                if (!mounted) return;
-                setState(() {
-                  max_value = event.inMilliseconds.toDouble();
-                });
-              });
-              audioPlayer?.onPositionChanged.listen((Duration event) {
-                if (isTap) return;
-                if (!mounted) return;
-                setState(() {
-                  sliderProgress = event.inMilliseconds.toDouble();
-                  playProgress = event.inMilliseconds;
-                });
-              });
+              String songName = mp3_tamil_list[songIndex];
+              // DownloadUtil._refreshTasks().then((value) {
+              _TaskInfo? tInfo = DownloadUtil._itemsMap[songName];
+              var id = tInfo?.taskId;
+              var status = tInfo?.status;
+              var progress = tInfo?.progress;
+              if (debug) {
+                print(
+                    'Task download status: task ($id)) is in status ($status) and process ($progress)');
+              }
+              if (id == null && tInfo?.status == DownloadTaskStatus.undefined) {
+                DownloadUtil._requestDownload(tInfo!);
+                showToaster(
+                    "The requested song is being downloaded! Please wait",
+                    context);
+              } else if (tInfo?.status == DownloadTaskStatus.running) {
+                // int? prog = tInfo?.progress;
+                // if (prog! < 5) {
+                //   DownloadUtil._delete(tInfo!);
+                // }
 
-              audioPlayer?.onPlayerStateChanged.listen((PlayerState state) {
-                if (!mounted) return;
-                setState(() {
-                  playing = state == PlayerState.playing;
-                });
-              });
-            },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.skip_previous), // icon
-                Text("Prev") // text
-              ],
-            ),
-          ),
-          Container(
-            width: 10,
-          ),
-          TextButton(
-            onPressed: () async {
-              if (audioPlayer != null) {
-                //var localFile = await downloadSong(day, song_no);
-                //var localFile = songs_fullpath_name(day,song_no)
-                print("===== currentDay:$currentDay");
-                print("===== currentSong:$currentSong");
-                var songIndex = getSongIndex(currentDay, currentSong);
-                print("=================================>");
-                print("========$currentDay=======$currentSong");
-                //audioPlayer = null;
-                lyricModel = LyricsModelBuilder.create()
-                    .bindLyricToMain(getLyricsList()[songIndex])
-                    .bindLyricToExt(transLyric)
-                    .getModel();
+                showToaster(
+                    "The requested song is being downloaded! Please play later.",
+                    context);
+              } else if (tInfo?.status == DownloadTaskStatus.paused) {
+                // int? prog = tInfo?.progress;
+                // if (prog! < 5) {
+                //   DownloadUtil._delete(tInfo!);
+                // }
+                showToaster(
+                    "The requested song is being downloaded! Please play later.",
+                    context);
+              } else if (tInfo?.status == DownloadTaskStatus.complete) {
+                // audioPlayer?.setVolume(1.0);
                 audioPlayer //= AudioPlayer()
-                    ?.play(AssetSource(mp3_tamil_list[songIndex]));
-                //..play(DeviceFileSource(localFile));
-                if (!mounted) return;
+                    ?.play(DeviceFileSource(localPath +
+                        "/" +
+                        songName)); // will immediately start playing
+                // ..play(AssetSource(mp3_tamil_list[songIndex]));
                 setState(() {
                   playing = true;
                 });
@@ -415,15 +520,15 @@ class _PlayPageState extends State<PlayPage> {
                     playing = state == PlayerState.playing;
                   });
                 });
-              } else {
-                // audioPlayer?.resume();
               }
+              DownloadUtil._refreshTasks();
+              // });
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.play_arrow), // icon
-                Text("Play") // text
+              children: const <Widget>[
+                Icon(Icons.skip_previous), // icon
+                Text("Prev") // text
               ],
             ),
           ),
@@ -432,16 +537,176 @@ class _PlayPageState extends State<PlayPage> {
           ),
           TextButton(
             onPressed: () async {
-              audioPlayer?.pause();
+              DownloadUtil._refreshTasks();
+              if (playing) {
+                audioPlayer!.pause();
+              } else if (!playing) {
+                if (audioPlayer != null) {
+                  // _requestDownload(_TaskInfo task)
+                  //var localFile = await downloadSong(day, song_no);
+                  //var localFile = songs_fullpath_name(day,song_no)
+                  var songIndex = getSongIndex(currentDay, currentSong);
+                  //audioPlayer = null;
+                  lyricModel = LyricsModelBuilder.create()
+                      .bindLyricToMain(getLyricsList()[songIndex])
+                      .bindLyricToExt(transLyric)
+                      .getModel();
+                  String songName = mp3_tamil_list[songIndex];
+                  // DownloadUtil._refreshTasks().then((value) {
+                  _TaskInfo? tInfo = DownloadUtil._itemsMap[songName];
+                  var id = tInfo?.taskId;
+                  var status = tInfo?.status;
+                  var progress = tInfo?.progress;
+                  if (debug) {
+                    print(
+                        'Task download status: task ($id)) is in status ($status) and process ($progress)');
+                  }
+                  if (id == null &&
+                      tInfo?.status == DownloadTaskStatus.undefined) {
+                    DownloadUtil._requestDownload(tInfo!);
+                    showToaster(
+                        "The requested song is being downloaded! Please wait...",
+                        context);
+                    // audioPlayer //= AudioPlayer()
+                    //     ?.play(DeviceFileSource(localPath +
+                    //         "/" +
+                    //         songName)); // will immediately start playing
+                    // await audioPlayer?.setVolume(1.0);
+
+                    // //..play(DeviceFileSource(localFile));
+                    // setState(() {
+                    //   playing = true;
+                    // });
+                    showToaster(
+                        "The requested song is being downloaded! Please play later.",
+                        context);
+                  } else if (tInfo?.status == DownloadTaskStatus.paused) {
+                    DownloadUtil._resumeDownload(tInfo!);
+                    showToaster(
+                        "The requested song is being downloaded! Please play later.",
+                        context);
+                  } else if (tInfo?.status == DownloadTaskStatus.complete) {
+                    audioPlayer //= AudioPlayer()
+                        ?.play(DeviceFileSource(localPath +
+                            "/" +
+                            songName)); // will immediately start playing
+                    //?.play(AssetSource(mp3_tamil_list[songIndex]));
+                    //..play(DeviceFileSource(localFile));
+                    if (!mounted) return;
+                    setState(() {
+                      playing = true;
+                    });
+                    audioPlayer?.onDurationChanged.listen((Duration event) {
+                      if (!mounted) return;
+                      setState(() {
+                        max_value = event.inMilliseconds.toDouble();
+                      });
+                    });
+                    audioPlayer?.onPositionChanged.listen((Duration event) {
+                      if (isTap) return;
+                      if (!mounted) return;
+                      setState(() {
+                        sliderProgress = event.inMilliseconds.toDouble();
+                        playProgress = event.inMilliseconds;
+                      });
+                    });
+
+                    audioPlayer?.onPlayerStateChanged
+                        .listen((PlayerState state) {
+                      if (!mounted) return;
+                      setState(() {
+                        playing = state == PlayerState.playing;
+                      });
+                    });
+                  }
+                  DownloadUtil._refreshTasks();
+                  // });
+                }
+              }
             },
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(Icons.pause), // icon
-                Text("Pause") // text
-              ],
-            ),
+            child: !playing
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const <Widget>[
+                      Icon(Icons.play_arrow), // icon
+                      Text("Play") // text
+                    ],
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const <Widget>[
+                      Icon(Icons.pause), // icon
+                      Text("Pause") // text
+                    ],
+                  ),
           ),
+
+          // TextButton(
+          //   onPressed: () async {
+          //     if (audioPlayer != null) {
+          //       //var localFile = await downloadSong(day, song_no);
+          //       //var localFile = songs_fullpath_name(day,song_no)
+          //       var songIndex = getSongIndex(currentDay, currentSong);
+          //       //audioPlayer = null;
+          //       lyricModel = LyricsModelBuilder.create()
+          //           .bindLyricToMain(getLyricsList()[songIndex])
+          //           .bindLyricToExt(transLyric)
+          //           .getModel();
+          //       audioPlayer //= AudioPlayer()
+          //           ?.play(AssetSource(mp3_tamil_list[songIndex]));
+          //       //..play(DeviceFileSource(localFile));
+          //       if (!mounted) return;
+          //       setState(() {
+          //         playing = true;
+          //       });
+          //       audioPlayer?.onDurationChanged.listen((Duration event) {
+          //         if (!mounted) return;
+          //         setState(() {
+          //           max_value = event.inMilliseconds.toDouble();
+          //         });
+          //       });
+          //       audioPlayer?.onPositionChanged.listen((Duration event) {
+          //         if (isTap) return;
+          //         if (!mounted) return;
+          //         setState(() {
+          //           sliderProgress = event.inMilliseconds.toDouble();
+          //           playProgress = event.inMilliseconds;
+          //         });
+          //       });
+
+          //       audioPlayer?.onPlayerStateChanged.listen((PlayerState state) {
+          //         if (!mounted) return;
+          //         setState(() {
+          //           playing = state == PlayerState.playing;
+          //         });
+          //       });
+          //     } else {
+          //       // audioPlayer?.resume();
+          //     }
+          //   },
+          //   child: Column(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: const <Widget>[
+          //       CircleAvatar(child: Icon(Icons.play_arrow)), // icon
+          //       Text("Play") // text
+          //     ],
+          //   ),
+          // ),
+          // Container(
+          //   width: 10,
+          // ),
+          // TextButton(
+          //   onPressed: () async {
+          //     audioPlayer?.pause();
+          //   },
+          //   child: Column(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: const <Widget>[
+          //       Icon(Icons.pause), // icon
+          //       Text("Pause") // text
+          //     ],
+          //   ),
+          // ),
           Container(
             width: 10,
           ),
@@ -452,7 +717,7 @@ class _PlayPageState extends State<PlayPage> {
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              children: const <Widget>[
                 Icon(Icons.stop), // icon
                 Text("Stop") // text
               ],
@@ -463,6 +728,7 @@ class _PlayPageState extends State<PlayPage> {
           ),
           TextButton(
             onPressed: () async {
+              DownloadUtil._refreshTasks();
               audioPlayer?.stop();
               nextSong();
               setState(() {
@@ -476,37 +742,68 @@ class _PlayPageState extends State<PlayPage> {
                   .bindLyricToMain(getLyricsList()[songIndex])
                   .bindLyricToExt(transLyric)
                   .getModel();
-              audioPlayer //= AudioPlayer()
-                  ?.play(AssetSource(mp3_tamil_list[songIndex]));
-              //..play(DeviceFileSource(localFile));
-              setState(() {
-                playing = true;
-              });
-              audioPlayer?.onDurationChanged.listen((Duration event) {
-                if (!mounted) return;
+              String songName = mp3_tamil_list[songIndex];
+              // DownloadUtil._refreshTasks().then((value) {
+              _TaskInfo? tInfo = DownloadUtil._itemsMap[songName];
+              var id = tInfo?.taskId;
+              var status = tInfo?.status;
+              var progress = tInfo?.progress;
+              if (debug) {
+                print(
+                    'Task download status: task ($id)) is in status ($status) and process ($progress)');
+              }
+              if (id == null && tInfo?.status == DownloadTaskStatus.undefined) {
+                DownloadUtil._requestDownload(tInfo!);
+                showToaster(
+                    "The requested song is being downloaded! Please play later.",
+                    context);
+              } else if (tInfo?.status == DownloadTaskStatus.running) {
+                showToaster(
+                    "The requested song is being downloaded! Please play later.",
+                    context);
+              } else if (tInfo?.status == DownloadTaskStatus.paused) {
+                DownloadUtil._resumeDownload(tInfo!);
+                showToaster(
+                    "The requested song is being downloaded! Please play later.",
+                    context);
+              } else if (tInfo?.status == DownloadTaskStatus.complete) {
+                // audioPlayer?.setVolume(1.0);
+                audioPlayer //= AudioPlayer()
+                    ?.play(DeviceFileSource(localPath +
+                        "/" +
+                        songName)); // will immediately start playing
+                //..play(DeviceFileSource(localFile));
                 setState(() {
-                  max_value = event.inMilliseconds.toDouble();
+                  playing = true;
                 });
-              });
-              audioPlayer?.onPositionChanged.listen((Duration event) {
-                if (isTap) return;
-                if (!mounted) return;
-                setState(() {
-                  sliderProgress = event.inMilliseconds.toDouble();
-                  playProgress = event.inMilliseconds;
+                audioPlayer?.onDurationChanged.listen((Duration event) {
+                  if (!mounted) return;
+                  setState(() {
+                    max_value = event.inMilliseconds.toDouble();
+                  });
                 });
-              });
+                audioPlayer?.onPositionChanged.listen((Duration event) {
+                  if (isTap) return;
+                  if (!mounted) return;
+                  setState(() {
+                    sliderProgress = event.inMilliseconds.toDouble();
+                    playProgress = event.inMilliseconds;
+                  });
+                });
 
-              audioPlayer?.onPlayerStateChanged.listen((PlayerState state) {
-                if (!mounted) return;
-                setState(() {
-                  playing = state == PlayerState.playing;
+                audioPlayer?.onPlayerStateChanged.listen((PlayerState state) {
+                  if (!mounted) return;
+                  setState(() {
+                    playing = state == PlayerState.playing;
+                  });
                 });
-              });
+              }
+              DownloadUtil._refreshTasks();
+              // });
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              children: const <Widget>[
                 Icon(Icons.skip_next), // icon
                 Text("Next") // text
               ],
@@ -523,7 +820,7 @@ class _PlayPageState extends State<PlayPage> {
     return [
       Positioned.fill(
         child: Image.asset(
-          "bhagavan_sitting.png",
+          "assets/images/bhagavan_sitting.png",
           fit: BoxFit.cover,
         ),
       ),
@@ -790,4 +1087,265 @@ class _PlayPageState extends State<PlayPage> {
     //Download the song to the local download folder.
     return "path_to_file";
   }
+}
+
+class DownloadUtil {
+  static var _permissionReady;
+  static var _localPath;
+  static var _tasks = [];
+  static var _items = [];
+  static var _documents = [];
+  static bool _isLoading = false;
+  static var _data = [];
+  static Map<String, _TaskInfo?> _itemsMap = {};
+  static ReceivePort _port = ReceivePort();
+
+  static void _getFilesList() async {
+    // await FlutterDownloader.initialize();
+
+    _documents.clear();
+    for (var i = 0; i <= mp3_tamil_list.length - 1; i++) {
+      Map<String, String> doc = {};
+
+      doc['name'] = mp3_tamil_list[i];
+      doc['link'] = tamil_mp3_parent_url + mp3_tamil_list[i];
+      _documents.add(doc);
+    }
+
+    _data = [];
+    _data = _documents;
+    // _bindBackgroundIsolate();
+
+    FlutterDownloader.registerCallback(downloadCallback);
+
+    _prepare();
+  }
+
+  // static void _bindBackgroundIsolate() {
+  //   bool isSuccess = IsolateNameServer.registerPortWithName(
+  //       _port.sendPort, 'downloader_send_port');
+  //   if (!isSuccess) {
+  //     _unbindBackgroundIsolate();
+  //     _bindBackgroundIsolate();
+  //     return;
+  //   }
+  //   _port.listen((dynamic data) {
+  //     if (debug) {
+  //       print('UI Isolate Callback: $data');
+  //     }
+  //     String? id = data[0];
+  //     DownloadTaskStatus? status = data[1];
+  //     int? progress = data[2];
+
+  //     if (_tasks != null && _tasks!.isNotEmpty) {
+  //       final task = _tasks!.firstWhere((task) => task.taskId == id);
+  //       task.status = status;
+  //       task.progress = progress;
+  //     }
+  //   });
+  // }
+
+  // static void _unbindBackgroundIsolate() {
+  //   IsolateNameServer.removePortNameMapping('downloader_send_port');
+  // }
+
+  static void downloadCallback(
+      String id, DownloadTaskStatus status, int progress) {
+    if (debug) {
+      print(
+          'Background Isolate Callback: task ($id) is in status ($status) and process ($progress)');
+    }
+    // final SendPort send =
+    //     IsolateNameServer.lookupPortByName('downloader_send_port')!;
+    // send.send([id, status, progress]);
+  }
+
+  static Future<void> _retryRequestPermission() async {
+    final hasGranted = await _checkPermission();
+
+    if (hasGranted) {
+      await _prepareSaveDir();
+    }
+
+    _permissionReady = hasGranted;
+  }
+
+  static void _requestDownload(_TaskInfo task) async {
+    task.taskId = await FlutterDownloader.enqueue(
+      url: task.link!,
+      headers: {"auth": "test_for_sql_encoding"},
+      savedDir: _localPath,
+      showNotification: true,
+      openFileFromNotification: true,
+      saveInPublicStorage: true,
+    );
+  }
+
+  // Not used in the example.
+  // void _cancelDownload(_TaskInfo task) async {
+  //   await FlutterDownloader.cancel(taskId: task.taskId!);
+  // }
+
+  static void _pauseDownload(_TaskInfo task) async {
+    await FlutterDownloader.pause(taskId: task.taskId!);
+  }
+
+  static void _resumeDownload(_TaskInfo task) async {
+    String? newTaskId = await FlutterDownloader.resume(taskId: task.taskId!);
+    task.taskId = newTaskId;
+  }
+
+  static void _retryDownload(_TaskInfo task) async {
+    String? newTaskId = await FlutterDownloader.retry(taskId: task.taskId!);
+    task.taskId = newTaskId;
+  }
+
+  Future<bool> _openDownloadedFile(_TaskInfo? task) {
+    if (task != null) {
+      return FlutterDownloader.open(taskId: task.taskId!);
+    } else {
+      return Future.value(false);
+    }
+  }
+
+  static void _delete(_TaskInfo task) async {
+    await FlutterDownloader.remove(
+        taskId: task.taskId!, shouldDeleteContent: true);
+    await _prepare();
+  }
+
+  static Future<bool> _checkPermission() async {
+    return true;
+  }
+
+  static Future<Null> _refreshTasks() async {
+    final tasks = await FlutterDownloader.loadTasks();
+
+    int count = 0;
+    _tasks = [];
+    _items = [];
+
+    _tasks!.addAll(_documents.map((document) =>
+        _TaskInfo(name: document['name'], link: document['link'])));
+
+    _items.add(_ItemHolder(name: 'Parayana Songs'));
+    for (int i = count; i < _tasks!.length; i++) {
+      _items.add(_ItemHolder(name: _tasks![i].name, task: _tasks![i]));
+      _itemsMap[_tasks![i].name] = _tasks![i];
+      if (_tasks![i].status == DownloadTaskStatus.complete) {
+        mp3_download_status[i] = true;
+      }
+      count++;
+    }
+
+    tasks!.forEach((task) {
+      for (_TaskInfo info in _tasks!) {
+        if (info.link == task.url) {
+          info.taskId = task.taskId;
+          info.status = task.status;
+          info.progress = task.progress;
+        }
+      }
+    });
+  }
+
+  static Future<Null> _prepare() async {
+    final tasks = await FlutterDownloader.loadTasks();
+
+    int count = 0;
+    _tasks = [];
+    _items = [];
+
+    _tasks!.addAll(_documents.map((document) =>
+        _TaskInfo(name: document['name'], link: document['link'])));
+
+    _items.add(_ItemHolder(name: 'Parayana Songs'));
+    for (int i = count; i < _tasks!.length; i++) {
+      _items.add(_ItemHolder(name: _tasks![i].name, task: _tasks![i]));
+      _itemsMap[_tasks![i].name] = _tasks![i];
+      if (_tasks![i].status == DownloadTaskStatus.complete) {
+        mp3_download_status[i] = true;
+      }
+      count++;
+    }
+
+    // _tasks!.addAll(_images
+    //     .map((image) => _TaskInfo(name: image['name'], link: image['link'])));
+
+    // _items.add(_ItemHolder(name: 'Images'));
+    // for (int i = count; i < _tasks!.length; i++) {
+    //   _items.add(_ItemHolder(name: _tasks![i].name, task: _tasks![i]));
+    //   count++;
+    // }
+
+    // _tasks!.addAll(_videos
+    //     .map((video) => _TaskInfo(name: video['name'], link: video['link'])));
+
+    // _items.add(_ItemHolder(name: 'Videos'));
+    // for (int i = count; i < _tasks!.length; i++) {
+    //   _items.add(_ItemHolder(name: _tasks![i].name, task: _tasks![i]));
+    //   count++;
+    // }
+
+    tasks!.forEach((task) {
+      for (_TaskInfo info in _tasks!) {
+        if (info.link == task.url) {
+          info.taskId = task.taskId;
+          info.status = task.status;
+          info.progress = task.progress;
+        }
+      }
+    });
+
+    _permissionReady = await _checkPermission();
+
+    if (_permissionReady) {
+      await _prepareSaveDir();
+    }
+
+    _isLoading = false;
+  }
+
+  static Future<void> _prepareSaveDir() async {
+    _localPath = (await _findLocalPath())!;
+    final savedDir = Directory(_localPath);
+    bool hasExisted = await savedDir.exists();
+    if (!hasExisted) {
+      savedDir.create();
+    }
+  }
+
+  static Future<String?> _findLocalPath() async {
+    var externalStorageDirPath;
+    if (Platform.isAndroid) {
+      try {
+        externalStorageDirPath = await AndroidPathProvider.downloadsPath;
+      } catch (e) {
+        final directory = await getExternalStorageDirectory();
+        externalStorageDirPath = directory?.path;
+      }
+    } else if (Platform.isIOS) {
+      externalStorageDirPath =
+          (await getApplicationDocumentsDirectory()).absolute.path;
+    }
+    return externalStorageDirPath;
+  }
+}
+
+class _TaskInfo {
+  final String? name;
+  final String? link;
+
+  String? taskId;
+  int? progress = 0;
+  DownloadTaskStatus? status = DownloadTaskStatus.undefined;
+
+  _TaskInfo({this.name, this.link});
+}
+
+class _ItemHolder {
+  final String? name;
+  final _TaskInfo? task;
+
+  _ItemHolder({this.name, this.task});
 }
