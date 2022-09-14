@@ -122,7 +122,7 @@ class _AboutPageState extends State<AboutPage> {
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
                   selectedLanguage == "English" ? engAbout : about,
-                  textAlign: TextAlign.justify,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: screenWidth / 20,

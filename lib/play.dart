@@ -6,7 +6,7 @@ import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_lyric/lyrics_reader.dart';
-import 'package:interactive_tamil_parayana/dbo%20copy.dart';
+//import 'package:interactive_tamil_parayana/dbo%20copy.dart';
 import 'package:interactive_tamil_parayana/download.dart';
 import 'package:interactive_tamil_parayana/utils.dart';
 import 'package:sqflite/sqflite.dart';
@@ -1240,21 +1240,21 @@ class DownloadUtil {
     _tasks = [];
     _items = [];
 
-    _tasks!.addAll(_documents.map((document) =>
+    _tasks.addAll(_documents.map((document) =>
         _TaskInfo(name: document['name'], link: document['link'])));
 
     _items.add(_ItemHolder(name: 'Parayana Songs'));
-    for (int i = count; i < _tasks!.length; i++) {
-      _items.add(_ItemHolder(name: _tasks![i].name, task: _tasks![i]));
-      _itemsMap[_tasks![i].name] = _tasks![i];
-      if (_tasks![i].status == DownloadTaskStatus.complete) {
-        _itemsMap[_tasks![i].name]!.status = DownloadTaskStatus.complete;
+    for (int i = count; i < _tasks.length; i++) {
+      _items.add(_ItemHolder(name: _tasks[i].name, task: _tasks[i]));
+      _itemsMap[_tasks[i].name] = _tasks[i];
+      if (_tasks[i].status == DownloadTaskStatus.complete) {
+        _itemsMap[_tasks[i].name]!.status = DownloadTaskStatus.complete;
       }
       count++;
     }
 
     tasks!.forEach((task) {
-      for (_TaskInfo info in _tasks!) {
+      for (_TaskInfo info in _tasks) {
         if (info.link == task.url) {
           info.taskId = task.taskId;
           info.status = task.status;
@@ -1271,13 +1271,13 @@ class DownloadUtil {
     _tasks = [];
     _items = [];
 
-    _tasks!.addAll(_documents.map((document) =>
+    _tasks.addAll(_documents.map((document) =>
         _TaskInfo(name: document['name'], link: document['link'])));
 
     _items.add(_ItemHolder(name: 'Parayana Songs'));
-    for (int i = count; i < _tasks!.length; i++) {
-      _items.add(_ItemHolder(name: _tasks![i].name, task: _tasks![i]));
-      _itemsMap[_tasks![i].name] = _tasks![i];
+    for (int i = count; i < _tasks.length; i++) {
+      _items.add(_ItemHolder(name: _tasks[i].name, task: _tasks[i]));
+      _itemsMap[_tasks[i].name] = _tasks[i];
       count++;
     }
 
@@ -1300,7 +1300,7 @@ class DownloadUtil {
     // }
 
     tasks!.forEach((task) {
-      for (_TaskInfo info in _tasks!) {
+      for (_TaskInfo info in _tasks) {
         if (info.link == task.url) {
           info.taskId = task.taskId;
           info.status = task.status;

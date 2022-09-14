@@ -121,7 +121,7 @@ class _HistoryPageState extends State<HistoryPage> {
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
                   selectedLanguage == "English" ? engHistory : history,
-                  textAlign: TextAlign.justify,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: screenWidth / 20,
