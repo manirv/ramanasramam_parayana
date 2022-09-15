@@ -184,7 +184,7 @@ class _DownloadFileState extends State<DownloadFile> {
         ),
       ),
       body: Container(
-         height: screenHeight,
+        height: screenHeight,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
               colors: [Colors.blue, Colors.purple],
@@ -195,8 +195,8 @@ class _DownloadFileState extends State<DownloadFile> {
         ),
         child: Center(
           child: Column(
-           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-           // crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _data.length != 0
                   ? Expanded(
@@ -213,7 +213,7 @@ class _DownloadFileState extends State<DownloadFile> {
 
   Widget _buildDownloadList() => Container(
         child: ListView(
-         padding: const EdgeInsets.symmetric(vertical: 3.0),
+          padding: const EdgeInsets.symmetric(vertical: 3.0),
           children: _items
               .map((item) => item.task == null
                   ? _buildListSection(item.name!)
@@ -246,7 +246,7 @@ class _DownloadFileState extends State<DownloadFile> {
       );
 
   Widget _buildListSection(String title) => Container(
-    alignment: Alignment.center,
+        alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 3.0),
         height: screenHeight / 25,
         // width: screenWidth / 0.100,
@@ -261,7 +261,9 @@ class _DownloadFileState extends State<DownloadFile> {
         child: Text(
           title,
           style: TextStyle(
-              fontWeight: FontWeight.bold, color: Colors.amberAccent, fontSize: 18.0),
+              fontWeight: FontWeight.bold,
+              color: Colors.amberAccent,
+              fontSize: 18.0),
         ),
       );
 
@@ -463,11 +465,11 @@ class DownloadItem extends StatelessWidget {
             Container(
               width: double.infinity,
               height: screenHeight / 10,
-              padding: EdgeInsets.only(top: 5,bottom: 5),
-              margin: const EdgeInsets.only(top: 10,left: 20,right:20),
+              padding: EdgeInsets.only(top: 5, bottom: 5),
+              margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
               decoration: const BoxDecoration(
                 color: Colors.purpleAccent,
-               borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                borderRadius: BorderRadius.all(Radius.circular(5.0)),
               ),
               child: Column(
                 //mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -494,10 +496,12 @@ class DownloadItem extends StatelessWidget {
             data!.task!.status == DownloadTaskStatus.running ||
                     data!.task!.status == DownloadTaskStatus.paused
                 ? Positioned(
-                    left: 0.0,
-                    right: 0.0,
+                    left: 20.0,
+                    right: 20.0,
                     bottom: 0.0,
                     child: LinearProgressIndicator(
+                      backgroundColor: Color.fromARGB(255, 162, 162, 122),
+                      color: Colors.yellow,
                       value: data!.task!.progress! / 100,
                     ),
                   )
@@ -514,7 +518,10 @@ class DownloadItem extends StatelessWidget {
         onPressed: () {
           onActionClick!(task);
         },
-        child: Icon(Icons.file_download),
+        child: Icon(
+          Icons.file_download,
+          color: Colors.yellow,
+        ),
         shape: CircleBorder(),
         constraints: BoxConstraints(minHeight: 32.0, minWidth: 32.0),
       );
@@ -548,7 +555,7 @@ class DownloadItem extends StatelessWidget {
         children: [
           Text(
             'Open',
-            style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
           ),
           RawMaterialButton(
             onPressed: () {
@@ -556,7 +563,7 @@ class DownloadItem extends StatelessWidget {
             },
             child: Icon(
               Icons.delete_forever,
-              color: Colors.black,
+              color: Colors.red,
             ),
             shape: CircleBorder(),
             constraints: BoxConstraints(minHeight: 32.0, minWidth: 32.0),
@@ -569,7 +576,9 @@ class DownloadItem extends StatelessWidget {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Failed', style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold)),
+          Text('Failed',
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
           RawMaterialButton(
             onPressed: () {
               onActionClick!(task);
@@ -584,7 +593,8 @@ class DownloadItem extends StatelessWidget {
         ],
       );
     } else if (task.status == DownloadTaskStatus.enqueued) {
-      return Text('Pending', style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold));
+      return Text('Pending',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold));
     } else {
       return null;
     }

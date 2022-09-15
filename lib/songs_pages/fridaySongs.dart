@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:interactive_tamil_parayana/const.dart';
 import 'package:interactive_tamil_parayana/utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FridaySongsPage extends StatefulWidget {
   const FridaySongsPage({super.key});
@@ -57,9 +58,11 @@ class _FridaySongsPageState extends State<FridaySongsPage> {
                       const Text("Tamil"),
                     ],
                   ),
-                  onTap: () {
+                  onTap: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setString("selectedLanguage", "Tamil");
                     setState(() {
-                      selectedLanguage = "Tamil";
+                      selectedLanguage = prefs.getString("selectedLanguage")!;
                     });
                   },
                 ),
@@ -79,8 +82,10 @@ class _FridaySongsPageState extends State<FridaySongsPage> {
                     ],
                   ),
                   onTap: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setString("selectedLanguage", "English");
                     setState(() {
-                      selectedLanguage = "English";
+                      selectedLanguage = prefs.getString("selectedLanguage")!;
                     });
                   },
                 ),

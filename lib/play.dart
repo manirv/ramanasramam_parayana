@@ -9,6 +9,7 @@ import 'package:flutter_lyric/lyrics_reader.dart';
 //import 'package:interactive_tamil_parayana/dbo%20copy.dart';
 import 'package:interactive_tamil_parayana/download.dart';
 import 'package:interactive_tamil_parayana/utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
 import 'const.dart';
@@ -259,10 +260,11 @@ class _PlayPageState extends State<PlayPage> {
                       const Text("Tamil"),
                     ],
                   ),
-                  onTap: () {
-                    // audioPlayer!.stop();
+                  onTap: () async{
+                   final prefs = await SharedPreferences.getInstance();
+                    prefs.setString("selectedLanguage", "Tamil");
                     setState(() {
-                      selectedLanguage = "Tamil";
+                      selectedLanguage = prefs.getString("selectedLanguage")!;
                       lyricModel = LyricsModelBuilder.create()
                           .bindLyricToMain(getLyricsList()[
                               getSongIndex(currentDay, currentSong)])
@@ -288,9 +290,10 @@ class _PlayPageState extends State<PlayPage> {
                     ],
                   ),
                   onTap: () async {
-                    // audioPlayer!.stop();
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setString("selectedLanguage", "English");
                     setState(() {
-                      selectedLanguage = "English";
+                      selectedLanguage = prefs.getString("selectedLanguage")!;
                       lyricModel = LyricsModelBuilder.create()
                           .bindLyricToMain(getLyricsList()[
                               getSongIndex(currentDay, currentSong)])

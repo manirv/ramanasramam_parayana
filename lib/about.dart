@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:interactive_tamil_parayana/const.dart';
 import 'package:interactive_tamil_parayana/utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AboutPage extends StatefulWidget {
   const AboutPage({super.key});
@@ -59,9 +60,11 @@ class _AboutPageState extends State<AboutPage> {
                       const Text("Tamil"),
                     ],
                   ),
-                  onTap: () {
+                  onTap: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setString("selectedLanguage", "Tamil");
                     setState(() {
-                      selectedLanguage = "Tamil";
+                      selectedLanguage = prefs.getString("selectedLanguage")!;
                     });
                   },
                 ),
@@ -81,8 +84,10 @@ class _AboutPageState extends State<AboutPage> {
                     ],
                   ),
                   onTap: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setString("selectedLanguage", "English");
                     setState(() {
-                      selectedLanguage = "English";
+                      selectedLanguage = prefs.getString("selectedLanguage")!;
                     });
                   },
                 ),

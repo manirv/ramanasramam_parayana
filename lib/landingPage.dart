@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:interactive_tamil_parayana/const.dart';
 import 'package:interactive_tamil_parayana/utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -10,6 +11,25 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+  @override
+  void initState() {
+    _languageSelection();
+    super.initState();
+  }
+
+  _languageSelection() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    
+
+    if (prefs.getString("selectedLanguage")==null) {
+      prefs.setString("selectedLanguage", "English");
+    }else{
+      selectedLanguage= prefs.getString("selectedLanguage")!;
+    }
+    print(prefs.getString("selectedLanguage"));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
