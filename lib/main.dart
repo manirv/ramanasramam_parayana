@@ -6,6 +6,9 @@ import 'package:interactive_tamil_parayana/dayslist.dart';
 import 'package:interactive_tamil_parayana/history.dart';
 import 'package:interactive_tamil_parayana/landingPage.dart';
 import 'package:interactive_tamil_parayana/play.dart';
+import 'package:interactive_tamil_parayana/responsive/mobile_landing.dart';
+import 'package:interactive_tamil_parayana/responsive/responsive_layout.dart';
+import 'package:interactive_tamil_parayana/responsive/tab_landing.dart';
 import 'package:interactive_tamil_parayana/songs_pages/fridaySongs.dart';
 import 'package:interactive_tamil_parayana/songs_pages/mondaySongs.dart';
 import 'package:interactive_tamil_parayana/songs_pages/saturdaySongs.dart';
@@ -41,7 +44,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/landingPage': (context) => const LandingPage(),
+        '/landingPage': (context) => ResponsiveLayout(
+              mobileBody: MobileLandingPage(),
+              tabletBody: TabletLandingPage(),
+            ),
         '/daysPage': (context) => const DaysListPage(),
         '/playPage': (context) => PlayPage(
               audioPlayer: AudioPlayer(playerId: "001"),

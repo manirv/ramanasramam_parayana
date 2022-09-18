@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:interactive_tamil_parayana/landingPage.dart';
+import 'package:interactive_tamil_parayana/responsive/mobile_landing.dart';
+import 'package:interactive_tamil_parayana/responsive/responsive_layout.dart';
+import 'package:interactive_tamil_parayana/responsive/tab_landing.dart';
 import 'utils.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -16,8 +19,12 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     Timer(
         const Duration(seconds: 5),
-        () => Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const LandingPage())));
+        () => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ResponsiveLayout(
+                    mobileBody: MobileLandingPage(),
+                    tabletBody: TabletLandingPage()))));
     super.initState();
   }
 
@@ -83,7 +90,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     fit: BoxFit.fill),
               ),
             ),
-           // SizedBox(height: screenHeight / 10),
+            // SizedBox(height: screenHeight / 10),
             Text(
               "The Poetic Works of \n Bhagavan Sri Ramana Maharshi",
               textAlign: TextAlign.center,
