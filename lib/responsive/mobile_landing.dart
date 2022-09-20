@@ -191,36 +191,6 @@ class _MobileLandingPageState extends State<MobileLandingPage> {
                         ),
                       ],
                     ))),
-            //     GestureDetector(
-            // onTap: () async {},
-            // child: Container(
-            //     margin: const EdgeInsets.all(20),
-            //     padding: const EdgeInsets.all(10.0),
-            //     decoration: BoxDecoration(
-            //       color: Colors.purpleAccent,
-            //       border: Border.all(width: 1.0, color: Colors.grey),
-            //       borderRadius:
-            //           const BorderRadius.all(Radius.circular(5.0)),
-            //     ),
-            //     child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //       children: [
-            //         Image.asset(
-            //           "assets/images/bhagavanround2.png",
-            //           width: screenWidth * 0.1,
-            //         ),
-            //         SizedBox(
-            //           width: screenWidth * 0.7,
-            //           child: Text(
-            //             "Tamil Parayana",
-            //             style: TextStyle(
-            //                 color: Colors.white,
-            //                 fontSize: screenWidth / 20,
-            //                 fontWeight: FontWeight.bold),
-            //           ),
-            //         ),
-            //       ],
-            //     ))),
           ],
         ),
       ),
