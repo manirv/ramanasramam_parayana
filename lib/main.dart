@@ -2,12 +2,12 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:interactive_tamil_parayana/about.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:interactive_tamil_parayana/dayslist.dart';
 import 'package:interactive_tamil_parayana/history.dart';
-import 'package:interactive_tamil_parayana/landingPage.dart';
 import 'package:interactive_tamil_parayana/play.dart';
 import 'package:interactive_tamil_parayana/responsive/mobile_landing.dart';
 import 'package:interactive_tamil_parayana/responsive/responsive_layout.dart';
+import 'package:interactive_tamil_parayana/responsive/tab_daysList.dart';
+import 'package:interactive_tamil_parayana/responsive/mobile_daysList.dart';
 import 'package:interactive_tamil_parayana/responsive/tab_landing.dart';
 import 'package:interactive_tamil_parayana/songs_pages/fridaySongs.dart';
 import 'package:interactive_tamil_parayana/songs_pages/mondaySongs.dart';
@@ -48,7 +48,8 @@ class MyApp extends StatelessWidget {
               mobileBody: MobileLandingPage(),
               tabletBody: TabletLandingPage(),
             ),
-        '/daysPage': (context) => const DaysListPage(),
+        '/mobleDaysPage': (context) =>  DaysListPage(),
+        '/tabDaysPage': (context) => const TabDaysListPage(),
         '/playPage': (context) => PlayPage(
               audioPlayer: AudioPlayer(playerId: "001"),
             ),

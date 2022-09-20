@@ -15,9 +15,14 @@ class _TuesdaySongsPageState extends State<TuesdaySongsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Sri Ramanasramam Parayana'),
+          title: Text(
+            'Sri Ramanasramam Parayana',
+            style: TextStyle(fontSize: screenHeight / 35),
+          ),
+          centerTitle: true,
           leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_outlined),
+              icon: Icon(Icons.arrow_back_ios_new_outlined,
+                  size: screenHeight / 30),
               onPressed: () {
                 Navigator.pop(context, true);
               }),
@@ -25,6 +30,7 @@ class _TuesdaySongsPageState extends State<TuesdaySongsPage> {
           actions: [
             PopupMenuButton<Widget>(
               position: PopupMenuPosition.under,
+              iconSize: screenHeight / 30,
               color: Colors.purple,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
@@ -32,19 +38,21 @@ class _TuesdaySongsPageState extends State<TuesdaySongsPage> {
                 ),
               ),
               itemBuilder: (context) => [
-                const PopupMenuItem(
+                PopupMenuItem(
                   enabled: false,
                   textStyle: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
-                  child: Text("Select Language"),
+                  child: Text("Select Language",
+                      style: TextStyle(fontSize: screenHeight / 50)),
                 ),
                 const PopupMenuDivider(
                   height: 0,
                 ),
                 PopupMenuItem(
                   textStyle: TextStyle(
+                      fontSize: screenHeight / 45,
                       color: selectedLanguage == "Tamil"
                           ? Colors.white
                           : Colors.black),
@@ -68,6 +76,7 @@ class _TuesdaySongsPageState extends State<TuesdaySongsPage> {
                 ),
                 PopupMenuItem(
                   textStyle: TextStyle(
+                      fontSize: screenHeight / 45,
                       color: selectedLanguage == "English"
                           ? Colors.white
                           : Colors.black),
@@ -128,50 +137,48 @@ class _TuesdaySongsPageState extends State<TuesdaySongsPage> {
                       color: Colors.white, fontSize: screenHeight * 0.035)),
             ),
             SizedBox(height: screenHeight / 50),
-            ListView.builder(
-                itemCount: tamil_songs_list[1].length,
-                physics: const AlwaysScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int index) {
-                  return GestureDetector(
-                      onTap: () async {
-                        setState(() {
-                          currentDay = 2;
-                          currentSong = index + 1;
-                        });
-                        Navigator.pushNamed(context, '/playPage');
-                      },
-                      child: Container(
-                          margin: const EdgeInsets.only(
-                              left: 10.0, right: 10.0, bottom: 5.0),
-                          padding: const EdgeInsets.all(10.0),
-                          decoration: const BoxDecoration(
-                            color: Colors.purpleAccent,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(5.0)),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Image.asset(
-                                "assets/images/flower3@2x.png",
-                                width: screenWidth * 0.1,
-                              ),
-                              SizedBox(
-                                width: screenWidth * 0.7,
-                                child: Text(
-                                  selectedLanguage == "Tamil"
-                                      ? tamil_songs_list[1][index]
-                                      : eng_songs_list[1][index],
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: screenWidth / 20,
-                                      fontWeight: FontWeight.bold),
+            Expanded(
+              child: ListView.builder(
+                  itemCount: tamil_songs_list[1].length,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                        onTap: () async {
+                          setState(() {
+                            currentDay = 2;
+                            currentSong = index + 1;
+                          });
+                          Navigator.pushNamed(context, '/playPage');
+                        },
+                        child: Container(
+                            margin: const EdgeInsets.only(
+                                left: 10.0, right: 10.0, bottom: 5.0),
+                            padding: const EdgeInsets.all(10.0),
+                            decoration: const BoxDecoration(
+                              color: Colors.purpleAccent,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5.0)),
+                            ),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  "assets/images/flower3@2x.png",
+                                  width: screenWidth * 0.1,
                                 ),
-                              ),
-                            ],
-                          )));
-                })
+                                Text(
+                                    selectedLanguage == "Tamil"
+                                        ? tamil_songs_list[1][index]
+                                        : eng_songs_list[1][index],
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: screenWidth / 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                              ],
+                            )));
+                  }),
+            )
           ],
         ),
       ),

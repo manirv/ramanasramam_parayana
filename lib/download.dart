@@ -162,12 +162,13 @@ class _DownloadFileState extends State<DownloadFile> {
     return new Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_outlined),
-            onPressed: () {
-              Navigator.pop(context, true);
-            }),
         leadingWidth: screenWidth / 11,
+        leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios_new_outlined,
+                  size: screenHeight / 30),
+              onPressed: () {
+                Navigator.pop(context, true);
+              }),
         title: Row(
           children: [
             Container(
@@ -179,7 +180,7 @@ class _DownloadFileState extends State<DownloadFile> {
                 fit: BoxFit.fill,
               ),
             ),
-            const Text('Parayanam Downloads'),
+             Text('Parayanam Downloads',style: TextStyle(fontSize: screenHeight / 35)),
           ],
         ),
       ),

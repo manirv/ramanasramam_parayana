@@ -59,3 +59,10 @@ showToaster(message, context) {
     reverseCurve: Curves.linear,
   );
 }
+
+class MenuData {
+  MenuData(this.icon, this.title, this.page);
+  final Widget icon;
+  final String title;
+  final String page;
+}

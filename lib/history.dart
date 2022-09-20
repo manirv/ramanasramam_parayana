@@ -15,16 +15,20 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('History of Parayana'),
+          title: Text('History of Parayana',
+              style: TextStyle(fontSize: screenHeight / 35)),
+          centerTitle: true,
           backgroundColor: Colors.purpleAccent,
           leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_outlined),
+              icon: Icon(Icons.arrow_back_ios_new_outlined,
+                  size: screenHeight / 30),
               onPressed: () {
                 Navigator.pop(context, true);
               }),
           leadingWidth: screenWidth / 11,
           actions: [
             PopupMenuButton<Widget>(
+              iconSize: screenHeight / 28,
               position: PopupMenuPosition.under,
               color: Colors.purple,
               shape: const RoundedRectangleBorder(
@@ -59,7 +63,7 @@ class _HistoryPageState extends State<HistoryPage> {
                       const Text("Tamil"),
                     ],
                   ),
-                  onTap: () async{
+                  onTap: () async {
                     final prefs = await SharedPreferences.getInstance();
                     prefs.setString("selectedLanguage", "Tamil");
                     setState(() {

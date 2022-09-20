@@ -199,22 +199,32 @@ class _PlayPageState extends State<PlayPage> {
   void initState() {
     super.initState();
     lyricUI.defaultSize = 30;
-    lyricUI.defaultExtSize = 14;
-    lyricUI.otherMainSize = 15;
+    lyricUI.defaultExtSize = screenHeight / 20;
+    lyricUI.otherMainSize = screenHeight / 20;
     lyricUI.bias = 0.5;
     lyricUI.lineGap = 10;
     lyricUI.inlineGap = 25;
-    lyricUI.lyricAlign = LyricAlign.LEFT;
+    lyricUI.lyricAlign = LyricAlign.CENTER;
     lyricUI.lyricBaseLine = LyricBaseLine.CENTER;
     lyricUI.highlight = true;
     lyricUI.highlightDirection = HighlightDirection.LTR;
     _getdb();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+  ]);
   }
 
   @override
   void dispose() {
     audioPlayer?.stop();
     audioPlayer?.seek(const Duration(milliseconds: 0));
+     SystemChrome.setPreferredOrientations([
+    //DeviceOrientation.landscapeRight,
+   // DeviceOrientation.landscapeLeft,
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
     super.dispose();
   }
 
@@ -222,10 +232,21 @@ class _PlayPageState extends State<PlayPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Sri Ramana Parayana'),
+          centerTitle: true,
+          title: Text(
+            'Sri Ramana Parayana',
+            style: TextStyle(fontSize: screenHeight / 35),
+          ),
           leadingWidth: screenWidth / 11,
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back_ios_new_outlined,
+                  size: screenHeight / 30),
+              onPressed: () {
+                Navigator.pop(context, true);
+              }),
           actions: [
             PopupMenuButton<Widget>(
+              iconSize: screenHeight / 28,
               position: PopupMenuPosition.under,
               color: Colors.purple,
               shape: const RoundedRectangleBorder(
@@ -260,8 +281,8 @@ class _PlayPageState extends State<PlayPage> {
                       const Text("Tamil"),
                     ],
                   ),
-                  onTap: () async{
-                   final prefs = await SharedPreferences.getInstance();
+                  onTap: () async {
+                    final prefs = await SharedPreferences.getInstance();
                     prefs.setString("selectedLanguage", "Tamil");
                     setState(() {
                       selectedLanguage = prefs.getString("selectedLanguage")!;
@@ -367,7 +388,7 @@ class _PlayPageState extends State<PlayPage> {
           position: playProgress,
           lyricUi: lyricUI,
           playing: playing,
-          size: Size(double.infinity, screenHeight / 1.5),
+          size: Size(double.infinity, screenHeight / 1.3),
           emptyBuilder: () => Center(
             child: Text(
               "Click on Play Button to Play with Verses",
@@ -446,7 +467,7 @@ class _PlayPageState extends State<PlayPage> {
           },
         ),
       Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           TextButton(
             onPressed: () async {
@@ -535,8 +556,11 @@ class _PlayPageState extends State<PlayPage> {
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const <Widget>[
-                Icon(Icons.skip_previous), // icon
+              children: <Widget>[
+                Icon(
+                  Icons.skip_previous,
+                  size: screenHeight / 20,
+                ), // icon
                 Text("Prev") // text
               ],
             ),
@@ -641,15 +665,21 @@ class _PlayPageState extends State<PlayPage> {
             child: !playing
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const <Widget>[
-                      Icon(Icons.play_arrow), // icon
+                    children: <Widget>[
+                      Icon(
+                        Icons.play_arrow,
+                        size: screenHeight / 20,
+                      ), // icon
                       Text("Play") // text
                     ],
                   )
                 : Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const <Widget>[
-                      Icon(Icons.pause), // icon
+                    children: <Widget>[
+                      Icon(
+                        Icons.pause,
+                        size: screenHeight / 20,
+                      ), // icon
                       Text("Pause") // text
                     ],
                   ),
@@ -731,8 +761,11 @@ class _PlayPageState extends State<PlayPage> {
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const <Widget>[
-                Icon(Icons.stop), // icon
+              children: <Widget>[
+                Icon(
+                  Icons.stop,
+                  size: screenHeight / 20,
+                ), // icon
                 Text("Stop") // text
               ],
             ),
@@ -821,8 +854,11 @@ class _PlayPageState extends State<PlayPage> {
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const <Widget>[
-                Icon(Icons.skip_next), // icon
+              children: <Widget>[
+                Icon(
+                  Icons.skip_next,
+                  size: screenHeight / 20,
+                ), // icon
                 Text("Next") // text
               ],
             ),

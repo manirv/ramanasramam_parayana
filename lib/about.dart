@@ -17,9 +17,14 @@ class _AboutPageState extends State<AboutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('About Tamil Parayana'),
+          title: Text(
+            'About Tamil Parayana',
+            style: TextStyle(fontSize: screenHeight / 35),
+          ),
+          centerTitle: true,
           leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_outlined),
+              icon: Icon(Icons.arrow_back_ios_new_outlined,
+                  size: screenHeight / 30),
               onPressed: () {
                 Navigator.pop(context, true);
               }),
@@ -27,6 +32,7 @@ class _AboutPageState extends State<AboutPage> {
           actions: [
             PopupMenuButton<Widget>(
               position: PopupMenuPosition.under,
+              iconSize: screenHeight / 30,
               color: Colors.purple,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(
@@ -34,19 +40,21 @@ class _AboutPageState extends State<AboutPage> {
                 ),
               ),
               itemBuilder: (context) => [
-                const PopupMenuItem(
+                PopupMenuItem(
                   enabled: false,
                   textStyle: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
                   ),
-                  child: Text("Select Language"),
+                  child: Text("Select Language",
+                      style: TextStyle(fontSize: screenHeight / 50)),
                 ),
                 const PopupMenuDivider(
                   height: 0,
                 ),
                 PopupMenuItem(
                   textStyle: TextStyle(
+                      fontSize: screenHeight / 45,
                       color: selectedLanguage == "Tamil"
                           ? Colors.white
                           : Colors.black),
@@ -70,6 +78,7 @@ class _AboutPageState extends State<AboutPage> {
                 ),
                 PopupMenuItem(
                   textStyle: TextStyle(
+                      fontSize: screenHeight / 45,
                       color: selectedLanguage == "English"
                           ? Colors.white
                           : Colors.black),
