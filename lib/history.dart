@@ -109,38 +109,81 @@ class _HistoryPageState extends State<HistoryPage> {
               tileMode: TileMode.clamp),
         ),
         child: Center(
-            child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                width: screenWidth / 1.5,
-                height: screenHeight / 3,
-                margin: const EdgeInsets.all(10.0),
-                color: Colors.transparent,
-                child: Image.asset(
-                  "assets/images/bhagavan_sitting.png",
-                  fit: BoxFit.fill,
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.all(10.0),
-                padding: const EdgeInsets.all(10.0),
-                child: Text(
-                  selectedLanguage == "English" ? engHistory : history,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: screenWidth / 20,
-                      height: 1.5,
-                      fontWeight: FontWeight.bold),
-                ),
-              )
-            ],
-          ),
-        )),
+            child: MediaQuery.of(context).orientation == Orientation.portrait
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: screenWidth / 1.5,
+                        height: screenHeight / 3,
+                        margin: const EdgeInsets.all(10.0),
+                        color: Colors.transparent,
+                        child: Image.asset(
+                          "assets/images/bhagavan_sitting.png",
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.all(10.0),
+                          padding: const EdgeInsets.all(10.0),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            physics: const BouncingScrollPhysics(),
+                            child: Text(
+                              selectedLanguage == "English"
+                                  ? engHistory
+                                  : history,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: screenWidth / 20,
+                                  height: 1.5,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: screenWidth / 1.5,
+                        height: screenHeight / 3,
+                        margin: const EdgeInsets.all(10.0),
+                        color: Colors.transparent,
+                        child: Image.asset(
+                          "assets/images/bhagavan_sitting.png",
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.all(10.0),
+                          padding: const EdgeInsets.all(10.0),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            physics: const BouncingScrollPhysics(),
+                            child: Text(
+                              selectedLanguage == "English"
+                                  ? engHistory
+                                  : history,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: screenWidth / 20,
+                                  height: 1.5,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
       ),
     );
   }

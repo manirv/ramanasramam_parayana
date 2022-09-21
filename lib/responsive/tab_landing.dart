@@ -31,48 +31,87 @@ class _TabletLandingPageState extends State<TabletLandingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      body: SingleChildScrollView(
-        child: Container(
-          height: screenHeight,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                colors: [Colors.blue, Colors.purple],
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                stops: [0.0, 1.0],
-                tileMode: TileMode.clamp),
-          ),
-          alignment: Alignment.center,
-          child: Column(
-            children: [
-              SizedBox(height: screenHeight * 0.03),
-              Container(
-                height: screenHeight * 0.3,
-                width: screenWidth / 1.8,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage('assets/images/bhagavan2_500.9.png'),
-                      fit: BoxFit.fill),
-                ),
-              ),
-              SizedBox(height: screenHeight / 4000),
-              Text('Parayana At Sri Ramanasramam',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: screenWidth / 20,
-                      fontWeight: FontWeight.bold)),
-              SizedBox(height: screenHeight / 200),
-              Text('The Poetic Works of \n Bhagavan Sri Ramana Maharshi',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.amberAccent,
-                      fontSize: screenWidth / 20,
-                      fontWeight: FontWeight.bold)),
-              SizedBox(height: screenHeight / 4000),
-              _getMenuBody(),
-            ],
-          ),
+      body: Container(
+        height: screenHeight,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+              colors: [Colors.blue, Colors.purple],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              stops: [0.0, 1.0],
+              tileMode: TileMode.clamp),
         ),
+        alignment: Alignment.center,
+        child: MediaQuery.of(context).orientation == Orientation.portrait
+            ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: screenHeight * 0.03),
+                  Container(
+                    height: screenHeight * 0.3,
+                    width: screenWidth / 1.8,
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                          image:
+                              AssetImage('assets/images/bhagavan2_500.9.png'),
+                          fit: BoxFit.fill),
+                    ),
+                  ),
+                  SizedBox(height: screenHeight / 4000),
+                  Text('Parayana At Sri Ramanasramam',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: screenWidth / 20,
+                          fontWeight: FontWeight.bold)),
+                  SizedBox(height: screenHeight / 200),
+                  Text('The Poetic Works of \n Bhagavan Sri Ramana Maharshi',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.amberAccent,
+                          fontSize: screenWidth / 20,
+                          fontWeight: FontWeight.bold)),
+                  SizedBox(height: screenHeight / 4000),
+                  _getMenuBody(),
+                ],
+              )
+            : Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.all(10.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: screenHeight * 0.3,
+                          width: screenWidth / 1.8,
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage(
+                                    'assets/images/bhagavan2_500.9.png'),
+                                fit: BoxFit.fill),
+                          ),
+                        ),
+                        SizedBox(height: screenHeight / 4000),
+                        Text('Parayana At Sri Ramanasramam',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: screenWidth / 20,
+                                fontWeight: FontWeight.bold)),
+                        SizedBox(height: screenHeight / 200),
+                        Text(
+                            'The Poetic Works of \n Bhagavan Sri Ramana Maharshi',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.amberAccent,
+                                fontSize: screenWidth / 20,
+                                fontWeight: FontWeight.bold)),
+                        SizedBox(height: screenHeight / 4000),
+                      ],
+                    ),
+                  ),
+                  _getMenuBody(),
+                ],
+              ),
       ),
     );
   }
@@ -97,10 +136,13 @@ class _TabletLandingPageState extends State<TabletLandingPage> {
 
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.all(5.0),
+        padding:  EdgeInsets.all( MediaQuery.of(context).orientation == Orientation.portrait?10.0:15.0),
         child: Container(
-          height: screenHeight / 2,
-          width: screenWidth / 1.2,
+          margin: EdgeInsets.all(MediaQuery.of(context).orientation == Orientation.portrait?10.0:15.0),
+          height: MediaQuery.of(context).orientation == Orientation.portrait
+              ? screenHeight * 1
+              : screenHeight / 0.3,
+          width: MediaQuery.of(context).orientation == Orientation.portrait?screenWidth/1.5: screenWidth /5,
           color: Colors.transparent,
           child: GridView.builder(
             shrinkWrap: true,
@@ -116,7 +158,9 @@ class _TabletLandingPageState extends State<TabletLandingPage> {
               return Container(
                 margin: EdgeInsets.all(10.0),
                 padding: EdgeInsets.all(5.0),
-                decoration: BoxDecoration(color: Colors.purpleAccent,borderRadius: BorderRadius.all(Radius.circular(20))),
+                decoration: BoxDecoration(
+                    color: Colors.purpleAccent,
+                    borderRadius: BorderRadius.all(Radius.circular(20))),
                 child: InkWell(
                   onTap: () {
                     Navigator.pushNamed(
@@ -134,7 +178,7 @@ class _TabletLandingPageState extends State<TabletLandingPage> {
                         menu[index].title,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontSize: screenWidth / 20,
+                            fontSize: screenWidth / 30,
                             color: Colors.white,
                             fontWeight: FontWeight.bold),
                       )

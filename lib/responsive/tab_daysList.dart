@@ -13,123 +13,142 @@ class _TabDaysListPageState extends State<TabDaysListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          centerTitle: true,
-          title: Text(
-            'Sri Ramanasramam Parayana',
-            style: TextStyle(fontSize: screenHeight / 35),
-          ),
-          //  backgroundColor: Colors.purpleAccent,
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios_new_outlined,
-                  size: screenHeight / 30),
-              onPressed: () {
-                Navigator.pop(context, true);
-              }),
-          leadingWidth: screenWidth / 11,
-          actions: [
-            PopupMenuButton<Widget>(
-              iconSize: screenHeight / 30,
-              position: PopupMenuPosition.under,
-              color: Colors.purple,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(20.0),
-                ),
-              ),
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  enabled: false,
-                  textStyle: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                  child: Text("Select Language",
-                      style: TextStyle(fontSize: screenHeight / 50)),
-                ),
-                const PopupMenuDivider(
-                  height: 0,
-                ),
-                PopupMenuItem(
-                  textStyle: TextStyle(
-                      fontSize: screenHeight / 45,
-                      color: selectedLanguage == "Tamil"
-                          ? Colors.white
-                          : Colors.black),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      selectedLanguage == "Tamil"
-                          ? const Icon(Icons.check)
-                          : Container(),
-                      const SizedBox(width: 5.0),
-                      const Text("Tamil"),
-                    ],
-                  ),
-                  onTap: () async {
-                    final prefs = await SharedPreferences.getInstance();
-                    prefs.setString("selectedLanguage", "Tamil");
-                    setState(() {
-                      selectedLanguage = prefs.getString("selectedLanguage")!;
-                    });
-                  },
-                ),
-                PopupMenuItem(
-                  textStyle: TextStyle(
-                      fontSize: screenHeight / 45,
-                      color: selectedLanguage == "English"
-                          ? Colors.white
-                          : Colors.black),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      selectedLanguage == "English"
-                          ? const Icon(Icons.check)
-                          : Container(),
-                      const SizedBox(width: 5.0),
-                      const Text("English"),
-                    ],
-                  ),
-                  onTap: () async {
-                    final prefs = await SharedPreferences.getInstance();
-                    prefs.setString("selectedLanguage", "English");
-                    setState(() {
-                      selectedLanguage = prefs.getString("selectedLanguage")!;
-                    });
-                  },
-                ),
-              ],
-            )
-          ]),
-      body: Container(
-        height: screenHeight,
-        alignment: Alignment.center,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-              colors: [Colors.blue, Colors.purple],
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-              stops: [0.0, 0.8],
-              tileMode: TileMode.clamp),
-        ),
-        child: Column(
-          children: [
-            SizedBox(height: screenHeight / 50),
-            Container(
-              height: screenHeight * 0.3,
-              width: screenWidth / 2.1,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('assets/images/bhagavanround2.png'),
-                    fit: BoxFit.fill),
-              ),
+        appBar: AppBar(
+            centerTitle: true,
+            title: Text(
+              'Sri Ramanasramam Parayana',
+              style: TextStyle(fontSize: screenHeight / 35),
             ),
-            SizedBox(height: screenHeight / 40),
-            _getMenuBody()
-          ],
-        ),
-      ),
-    );
+            //  backgroundColor: Colors.purpleAccent,
+            leading: IconButton(
+                icon: Icon(Icons.arrow_back_ios_new_outlined,
+                    size: screenHeight / 30),
+                onPressed: () {
+                  Navigator.pop(context, true);
+                }),
+            leadingWidth: screenWidth / 11,
+            actions: [
+              PopupMenuButton<Widget>(
+                iconSize: screenHeight / 30,
+                position: PopupMenuPosition.under,
+                color: Colors.purple,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(20.0),
+                  ),
+                ),
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    enabled: false,
+                    textStyle: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                    child: Text("Select Language",
+                        style: TextStyle(fontSize: screenHeight / 50)),
+                  ),
+                  const PopupMenuDivider(
+                    height: 0,
+                  ),
+                  PopupMenuItem(
+                    textStyle: TextStyle(
+                        fontSize: screenHeight / 45,
+                        color: selectedLanguage == "Tamil"
+                            ? Colors.white
+                            : Colors.black),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        selectedLanguage == "Tamil"
+                            ? const Icon(Icons.check)
+                            : Container(),
+                        const SizedBox(width: 5.0),
+                        const Text("Tamil"),
+                      ],
+                    ),
+                    onTap: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      prefs.setString("selectedLanguage", "Tamil");
+                      setState(() {
+                        selectedLanguage = prefs.getString("selectedLanguage")!;
+                      });
+                    },
+                  ),
+                  PopupMenuItem(
+                    textStyle: TextStyle(
+                        fontSize: screenHeight / 45,
+                        color: selectedLanguage == "English"
+                            ? Colors.white
+                            : Colors.black),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        selectedLanguage == "English"
+                            ? const Icon(Icons.check)
+                            : Container(),
+                        const SizedBox(width: 5.0),
+                        const Text("English"),
+                      ],
+                    ),
+                    onTap: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      prefs.setString("selectedLanguage", "English");
+                      setState(() {
+                        selectedLanguage = prefs.getString("selectedLanguage")!;
+                      });
+                    },
+                  ),
+                ],
+              )
+            ]),
+        body: Container(
+          height: screenHeight,
+          alignment: Alignment.center,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                colors: [Colors.blue, Colors.purple],
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                stops: [0.0, 0.8],
+                tileMode: TileMode.clamp),
+          ),
+          child: MediaQuery.of(context).orientation == Orientation.portrait
+              ? Column(
+                  children: [
+                    SizedBox(height: screenHeight / 50),
+                    Container(
+                      height: screenHeight * 0.3,
+                      width: screenWidth / 2.1,
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                            image:
+                                AssetImage('assets/images/bhagavanround2.png'),
+                            fit: BoxFit.fill),
+                      ),
+                    ),
+                    SizedBox(height: screenHeight / 40),
+                    _getMenuBody()
+                  ],
+                )
+              : Row(
+                  children: [
+                    SizedBox(height: screenHeight / 50),
+                    Container(
+                      height: screenHeight * 0.3,
+                      width: screenWidth / 2,
+                      margin: EdgeInsets.all(10.0),
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                            image:
+                                AssetImage('assets/images/bhagavanround2.png'),
+                            fit: BoxFit.fill),
+                      ),
+                    ),
+                    SizedBox(height: screenHeight / 40),
+                    _getMenuBody()
+                  ],
+                ),
+        ));
   }
 
   Image get_image(path) {
@@ -170,10 +189,10 @@ class _TabDaysListPageState extends State<TabDaysListPage> {
 
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.all(5.0),
+        padding: const EdgeInsets.all(15.0),
         child: Container(
-            height: screenHeight / 2,
-            width: screenWidth / 1.1,
+            height: screenHeight / 2.0,
+            width: screenWidth / 1,
             color: Colors.transparent,
             child: GridView.builder(
                 scrollDirection: Axis.vertical,

@@ -112,81 +112,160 @@ class _MondaySongsPageState extends State<MondaySongsPage> {
               stops: [0.0, 1.0],
               tileMode: TileMode.clamp),
         ),
-        child: Column(
-          children: [
-            SizedBox(height: screenHeight / 100),
-            Container(
-              width: screenWidth / 1.4,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.purpleAccent,
-                borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(15),
-                    bottomLeft: Radius.circular(15)),
-                boxShadow: [
-                  BoxShadow(
-                    offset: const Offset(0, 1),
-                    blurRadius: 5,
-                    color: Colors.black.withOpacity(0.3),
+        child: MediaQuery.of(context).orientation == Orientation.portrait
+            ? Column(
+                children: [
+                  SizedBox(height: screenHeight / 100),
+                  Container(
+                    width: screenWidth / 1.4,
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.purpleAccent,
+                      borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(15),
+                          bottomLeft: Radius.circular(15)),
+                      boxShadow: [
+                        BoxShadow(
+                          offset: const Offset(0, 1),
+                          blurRadius: 5,
+                          color: Colors.black.withOpacity(0.3),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                        selectedLanguage == "Tamil"
+                            ? "திங்கட்கிழமை "
+                            : "Tamil Parayanam\n Monday Songs",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: screenHeight * 0.035)),
                   ),
+                  SizedBox(height: screenHeight / 50),
+                  Expanded(
+                    child: ListView.builder(
+                        itemCount: tamil_songs_list[0].length,
+                        physics: BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (BuildContext context, int index) {
+                          return GestureDetector(
+                              onTap: () async {
+                                setState(() {
+                                  currentDay = 1;
+                                  currentSong = index + 1;
+                                });
+                                Navigator.pushNamed(context, '/playPage');
+                              },
+                              child: Container(
+                                  margin: const EdgeInsets.only(
+                                      left: 10.0, right: 10.0, bottom: 5.0),
+                                  padding: const EdgeInsets.all(10.0),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.purpleAccent,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/flower3@2x.png",
+                                        width: screenWidth * 0.1,
+                                      ),
+                                      Flexible(
+                                        child: Text(
+                                          selectedLanguage == "Tamil"
+                                              ? tamil_songs_list[0][index]
+                                              : eng_songs_list[0][index],
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: screenWidth / 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ],
+                                  )));
+                        }),
+                  )
+                ],
+              )
+            : Row(
+                children: [
+                  SizedBox(height: screenHeight / 100),
+                  Container(
+                    width: screenWidth / 2.5,
+                    padding: const EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.purpleAccent,
+                      borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(15),
+                          bottomLeft: Radius.circular(15)),
+                      boxShadow: [
+                        BoxShadow(
+                          offset: const Offset(0, 1),
+                          blurRadius: 5,
+                          color: Colors.black.withOpacity(0.3),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                        selectedLanguage == "Tamil"
+                            ? "திங்கட்கிழமை "
+                            : "Tamil Parayanam\n Monday Songs",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: screenHeight * 0.035)),
+                  ),
+                  SizedBox(height: screenHeight / 50),
+                  Expanded(
+                    child: ListView.builder(
+                        itemCount: tamil_songs_list[0].length,
+                        physics: BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (BuildContext context, int index) {
+                          return GestureDetector(
+                              onTap: () async {
+                                setState(() {
+                                  currentDay = 1;
+                                  currentSong = index + 1;
+                                });
+                                Navigator.pushNamed(context, '/playPage');
+                              },
+                              child: Container(
+                                  margin: const EdgeInsets.only(
+                                      left: 15.0, right: 15.0, bottom: 5.0),
+                                  padding: const EdgeInsets.all(10.0),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.purpleAccent,
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0)),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/flower3@2x.png",
+                                        width: screenWidth * 0.1,
+                                      ),
+                                      Flexible(
+                                        child: Text(
+                                          selectedLanguage == "Tamil"
+                                              ? tamil_songs_list[0][index]
+                                              : eng_songs_list[0][index],
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: screenWidth / 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ],
+                                  )));
+                        }),
+                  )
                 ],
               ),
-              child: Text(
-                  selectedLanguage == "Tamil"
-                      ? "திங்கட்கிழமை "
-                      : "Tamil Parayanam\n Monday Songs",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white, fontSize: screenHeight * 0.035)),
-            ),
-            SizedBox(height: screenHeight / 50),
-            Expanded(
-              child: ListView.builder(
-                  itemCount: tamil_songs_list[0].length,
-                  physics:  BouncingScrollPhysics(),
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                        onTap: () async {
-                          setState(() {
-                            currentDay = 1;
-                            currentSong = index + 1;
-                          });
-                          Navigator.pushNamed(context, '/playPage');
-                        },
-                        child: Container(
-                            margin: const EdgeInsets.only(
-                                left: 10.0, right: 10.0, bottom: 5.0),
-                            padding: const EdgeInsets.all(10.0),
-                            decoration: const BoxDecoration(
-                              color: Colors.purpleAccent,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                            ),
-                            child: Row(
-                              children: [
-                                Image.asset(
-                                  "assets/images/flower3@2x.png",
-                                  width: screenWidth * 0.1,
-                                ),
-                                Flexible(
-                                  child: Text(
-                                      selectedLanguage == "Tamil"
-                                          ? tamil_songs_list[0][index]
-                                          : eng_songs_list[0][index],
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: screenWidth / 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                ),
-                              ],
-                            )));
-                  }),
-            )
-          ],
-        ),
       ),
     );
   }

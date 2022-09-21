@@ -133,7 +133,7 @@ class _MobileLandingPageState extends State<MobileLandingPage> {
             SizedBox(height: screenHeight / 4000),
             GestureDetector(
                 onTap: () async {
-                  Navigator.pushNamed(context, '/daysPage');
+                  Navigator.pushNamed(context, '/mobleDaysPage');
                 },
                 child: Container(
                     margin: const EdgeInsets.all(20),
